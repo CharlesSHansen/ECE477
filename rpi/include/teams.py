@@ -1,19 +1,20 @@
 #Classes for Blue and Red Teams
 
-import RPi.GPIO as GPIO
+import pins
 
 class blue:
     def __init__(self):
-        self.score    = GPIO.input(0)
-        self.foul     = GPIO.input(3)
-        self.rrcycle  = GPIO.input(13)
-        self.rrsel    = GPIO.output(14)
-
+        self.score    = pins.pin0
+        self.foul     = pins.pin3
+        self.rrcycle  = pins.pin13
+        self.rrsel    = pins.pin14
+        self.rrout    = pins.pin22
 
 class red:
     def __init__(self):
-        self.score    = GPIO.input(2)
-        self.foul     = GPIO.input(12)
-        self.rrcycle  = GPIO.input(22)
-        self.rrsel    = GPIO.output(23)
+        self.score    = pins.pin2
+        self.foul     = pins.pin12
+        self.rrcycle  = pins.pin23
+        self.rrsel    = pins.pin24
+        self.rrout    = pins.pin25
     
