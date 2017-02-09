@@ -1,15 +1,19 @@
 #Microcontroller Interfaces
 
-import pins
-import teams.py as teams
+from pins import Pins
+from teams import Red
+from teams import Blue
 
-
-class redmicro:
+class Redmicro:
     def __init__(self):
-        self.nrst    = pins.pin9
-        self.rrout   = teams.red.rrout
+        self.red     = Red()
+        self.pins    = Pins()
+        self.nrst    = self.pins.pin3
+        self.rrout   = self.red.rrout
 
-class redmicro:
+class Bluemicro:
     def __init__(self):
-        self.nrst    = pins.pin9
-        self.rrout   = teams.blue.rrout
+        self.blue    = Blue()
+        self.pins    = Pins()
+        self.nrst    = self.pins.pin3
+        self.rrout   = self.blue.rrout

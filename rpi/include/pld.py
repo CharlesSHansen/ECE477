@@ -1,8 +1,14 @@
 #PLD Pins from RPI (nRST and CLK)
 
-import pins
 
-class pld:
+import time
+import RPi.GPIO as GPIO
+from pins import Pins
+
+class PLD:
     def __init__(self):
-        self.clk    = pins.pin21
-        self.nrst   = pins.pin9
+        self.pins   = Pins()
+        self.clk    = self.pins.pin5
+        self.nrst   = self.pins.pin3
+
+
