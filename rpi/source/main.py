@@ -3,7 +3,6 @@
 #
 # Direct port of the Arduino NeoPixel library strandtest example.  Showcases
 # various animations on a strip of NeoPixels.
-from __future__ import print_function
 import time
 import random
 import numpy
@@ -16,7 +15,7 @@ from math import *
 # LED strip configuration:
 WIDTH 		   = 30
 HEIGHT		   = 15
-LED_COUNT      = WIDTH * HEIGHT    # Number of LED pixels.
+LED_COUNT      = 450   # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
@@ -162,7 +161,7 @@ def setScoreDisplay(strip,disp,mask,r,g,b):
 def outputScore(strip, redScore, blueScore, clear):
     if (clear):
         clearStrip(strip)
-        #setBorder(strip)
+        setBorder(strip)
 
     #set red score
     if (redScore == 10):
