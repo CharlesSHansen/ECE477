@@ -1,0 +1,407 @@
+#$ TOOL ispLEVER Classic 2.0.00.17.20.15
+#$ DATE Thu Feb 09 15:57:59 2017
+#$ TITLE State Machines 
+#$ PROPERTY Lattice OSCTIMER TIMER_DIV= 2000000;
+#$ MODULE cpld
+#$ JEDECFILE cpld_led
+#$ PINS 33 nRST:53 clk_out:52 diode:70 cup1_motor_D:4 cup1_motor_U:5 \
+#  cup1_LED_OUT:28 cup2_motor_D:6 cup2_motor_U:7 cup2_LED_OUT:29 cup3_motor_D:8 \
+#  cup3_motor_U:9 cup3_LED_OUT:30 cup4_motor_D:11 cup4_motor_U:12 cup4_LED_OUT:31 \
+#  cup5_motor_D:13 cup5_motor_U:14 cup5_LED_OUT:32 cup6_motor_D:15 cup6_motor_U:16 \
+#  cup6_LED_OUT:33 cup7_motor_D:17 cup7_motor_U:20 cup7_LED_OUT:39 cup8_motor_D:21 \
+#  cup8_motor_U:22 cup8_LED_OUT:40 cup9_motor_D:23 cup9_motor_U:24 cup9_LED_OUT:41 \
+#  cup10_motor_D:25 cup10_motor_U:26 cup10_LED_OUT:42
+#$ NODES 51 timdiv1+ timdiv2+ timdiv3+ timdiv4+ timdiv5+ timdiv6+ timdiv7+ timdiv8+ \
+#  timdiv9+ timdiv10+ timdiv11+ timdiv12+ timdiv13+ Q0 Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 Q12 Q13 \
+#  Q14 Q15 Q16 Q17 Q18 Q19 Q20 Q21 Q22 Q23 Q24 Q25 Q26 Q27 Q28 Q29 osc_dis osc_rst osc_out tmr_out \
+#  P1>DYNOSCDIS'co'  P1>TIMERRES'co'  P1>OSCOUT'co'  P1>TIMEROUT'co' 
+#$ EXTERNAL osctimer  4 DYNOSCDIS'i'  TIMERRES'i'  OSCOUT'o'  TIMEROUT'o' 
+#$ INSTANCE P1 osctimer 4 P1>DYNOSCDIS P1>TIMERRES P1>OSCOUT P1>TIMEROUT
+.model cpld_led
+.inputs Q2.FB Q1.FB Q0.FB nRST.BLIF cup1_motor_D.BLIF cup1_motor_U.BLIF Q5.FB \
+Q4.FB Q3.FB cup2_motor_D.BLIF cup2_motor_U.BLIF Q8.FB Q7.FB Q6.FB \
+cup3_motor_D.BLIF cup3_motor_U.BLIF Q11.FB Q10.FB Q9.FB cup4_motor_D.BLIF \
+cup4_motor_U.BLIF Q14.FB Q13.FB Q12.FB cup5_motor_D.BLIF cup5_motor_U.BLIF \
+Q17.FB Q16.FB Q15.FB cup6_motor_D.BLIF cup6_motor_U.BLIF Q20.FB Q19.FB Q18.FB \
+cup7_motor_D.BLIF cup7_motor_U.BLIF Q23.FB Q22.FB Q21.FB cup8_motor_D.BLIF \
+cup8_motor_U.BLIF Q26.FB Q25.FB Q24.FB cup9_motor_D.BLIF cup9_motor_U.BLIF \
+Q29.FB Q28.FB Q27.FB cup10_motor_D.BLIF cup10_motor_U.BLIF P1>OSCOUT.BLIF \
+P1>TIMEROUT.BLIF osc_dis.BLIF osc_rst.BLIF timdiv1.BLIF tmr_out.BLIF \
+timdiv2.BLIF timdiv3.BLIF timdiv4.BLIF timdiv5.BLIF timdiv6.BLIF timdiv7.BLIF \
+timdiv8.BLIF timdiv9.BLIF timdiv10.BLIF timdiv11.BLIF timdiv12.BLIF \
+timdiv13.BLIF Q0.BLIF Q1.BLIF Q2.BLIF Q3.BLIF Q4.BLIF Q5.BLIF Q6.BLIF Q7.BLIF \
+Q8.BLIF Q9.BLIF Q10.BLIF Q11.BLIF Q12.BLIF Q13.BLIF Q14.BLIF Q15.BLIF Q16.BLIF \
+Q17.BLIF Q18.BLIF Q19.BLIF Q20.BLIF Q21.BLIF Q22.BLIF Q23.BLIF Q24.BLIF \
+Q25.BLIF Q26.BLIF Q27.BLIF Q28.BLIF Q29.BLIF
+.outputs clk_out diode osc_dis osc_rst osc_out tmr_out Q0.REG Q1.REG Q2.REG \
+Q3.REG Q4.REG Q5.REG Q6.REG Q7.REG Q8.REG Q9.REG Q10.REG Q11.REG Q12.REG \
+Q13.REG Q14.REG Q15.REG Q16.REG Q17.REG Q18.REG Q19.REG Q20.REG Q21.REG \
+Q22.REG Q23.REG Q24.REG Q25.REG Q26.REG Q27.REG Q28.REG Q29.REG P1>DYNOSCDIS \
+P1>TIMERRES timdiv1.D timdiv1.C timdiv2.D timdiv2.C timdiv3.D timdiv3.C \
+timdiv4.D timdiv4.C timdiv5.D timdiv5.C timdiv6.D timdiv6.C timdiv7.D \
+timdiv7.C timdiv8.D timdiv8.C timdiv9.D timdiv10.D timdiv11.D timdiv12.D \
+timdiv9.C timdiv10.C timdiv11.C timdiv12.C timdiv13.C timdiv13.D Q2.C Q1.C \
+Q0.C Q5.C Q4.C Q3.C Q8.C Q7.C Q6.C Q11.C Q10.C Q9.C Q14.C Q13.C Q12.C Q17.C \
+Q16.C Q15.C Q20.C Q19.C Q18.C Q23.C Q22.C Q21.C Q26.C Q25.C Q24.C Q29.C Q28.C \
+Q27.C cup1_LED_OUT cup2_LED_OUT cup3_LED_OUT cup4_LED_OUT cup5_LED_OUT \
+cup6_LED_OUT cup7_LED_OUT cup8_LED_OUT cup9_LED_OUT cup10_LED_OUT
+.names osc_dis
+.names osc_rst
+.names Q2.FB Q1.FB Q0.FB nRST.BLIF cup1_motor_D.BLIF cup1_motor_U.BLIF Q0.REG
+00101- 1
+01001- 1
+00001- 1
+01000- 1
+0110-0 1
+.names Q2.FB Q1.FB Q0.FB nRST.BLIF cup1_motor_D.BLIF cup1_motor_U.BLIF Q1.REG
+00101- 1
+01001- 1
+00100- 1
+0110-0 1
+.names nRST.BLIF Q5.FB Q4.FB Q3.FB cup2_motor_D.BLIF cup2_motor_U.BLIF Q3.REG
+00011- 1
+00101- 1
+00001- 1
+00100- 1
+0011-0 1
+.names nRST.BLIF Q5.FB Q4.FB Q3.FB cup2_motor_D.BLIF cup2_motor_U.BLIF Q4.REG
+00011- 1
+00101- 1
+00010- 1
+0011-0 1
+.names nRST.BLIF Q8.FB Q7.FB Q6.FB cup3_motor_D.BLIF cup3_motor_U.BLIF Q6.REG
+00011- 1
+00101- 1
+00001- 1
+00100- 1
+0011-0 1
+.names nRST.BLIF Q8.FB Q7.FB Q6.FB cup3_motor_D.BLIF cup3_motor_U.BLIF Q7.REG
+00011- 1
+00101- 1
+00010- 1
+0011-0 1
+.names nRST.BLIF Q11.FB Q10.FB Q9.FB cup4_motor_D.BLIF cup4_motor_U.BLIF \
+Q9.REG
+00011- 1
+00101- 1
+00001- 1
+00100- 1
+0011-0 1
+.names nRST.BLIF Q11.FB Q10.FB Q9.FB cup4_motor_D.BLIF cup4_motor_U.BLIF \
+Q10.REG
+00011- 1
+00101- 1
+00010- 1
+0011-0 1
+.names nRST.BLIF Q14.FB Q13.FB Q12.FB cup5_motor_D.BLIF cup5_motor_U.BLIF \
+Q12.REG
+00011- 1
+00101- 1
+00001- 1
+00100- 1
+0011-0 1
+.names nRST.BLIF Q14.FB Q13.FB Q12.FB cup5_motor_D.BLIF cup5_motor_U.BLIF \
+Q13.REG
+00011- 1
+00101- 1
+00010- 1
+0011-0 1
+.names nRST.BLIF Q17.FB Q16.FB Q15.FB cup6_motor_D.BLIF cup6_motor_U.BLIF \
+Q15.REG
+00011- 1
+00101- 1
+00001- 1
+00100- 1
+0011-0 1
+.names nRST.BLIF Q17.FB Q16.FB Q15.FB cup6_motor_D.BLIF cup6_motor_U.BLIF \
+Q16.REG
+00011- 1
+00101- 1
+00010- 1
+0011-0 1
+.names nRST.BLIF Q20.FB Q19.FB Q18.FB cup7_motor_D.BLIF cup7_motor_U.BLIF \
+Q18.REG
+00011- 1
+00101- 1
+00001- 1
+00100- 1
+0011-0 1
+.names nRST.BLIF Q20.FB Q19.FB Q18.FB cup7_motor_D.BLIF cup7_motor_U.BLIF \
+Q19.REG
+00011- 1
+00101- 1
+00010- 1
+0011-0 1
+.names nRST.BLIF Q23.FB Q22.FB Q21.FB cup8_motor_D.BLIF cup8_motor_U.BLIF \
+Q21.REG
+00011- 1
+00101- 1
+00001- 1
+00100- 1
+0011-0 1
+.names nRST.BLIF Q23.FB Q22.FB Q21.FB cup8_motor_D.BLIF cup8_motor_U.BLIF \
+Q22.REG
+00011- 1
+00101- 1
+00010- 1
+0011-0 1
+.names nRST.BLIF Q26.FB Q25.FB Q24.FB cup9_motor_D.BLIF cup9_motor_U.BLIF \
+Q24.REG
+00011- 1
+00101- 1
+00001- 1
+00100- 1
+0011-0 1
+.names nRST.BLIF Q26.FB Q25.FB Q24.FB cup9_motor_D.BLIF cup9_motor_U.BLIF \
+Q25.REG
+00011- 1
+00101- 1
+00010- 1
+0011-0 1
+.names nRST.BLIF Q29.FB Q28.FB Q27.FB cup10_motor_D.BLIF cup10_motor_U.BLIF \
+Q27.REG
+00011- 1
+00101- 1
+00001- 1
+00100- 1
+0011-0 1
+.names nRST.BLIF Q29.FB Q28.FB Q27.FB cup10_motor_D.BLIF cup10_motor_U.BLIF \
+Q28.REG
+00011- 1
+00101- 1
+00010- 1
+0011-0 1
+.names timdiv1.BLIF timdiv1.D
+0 1
+.names timdiv2.BLIF timdiv2.D
+0 1
+.names timdiv3.BLIF timdiv3.D
+0 1
+.names timdiv4.BLIF timdiv4.D
+0 1
+.names timdiv5.BLIF timdiv5.D
+0 1
+.names timdiv6.BLIF timdiv6.D
+0 1
+.names timdiv7.BLIF timdiv7.D
+0 1
+.names timdiv8.BLIF timdiv8.D
+0 1
+.names timdiv9.BLIF timdiv9.D
+0 1
+.names timdiv10.BLIF timdiv10.D
+0 1
+.names timdiv11.BLIF timdiv11.D
+0 1
+.names timdiv12.BLIF timdiv12.D
+0 1
+.names timdiv13.BLIF timdiv13.D
+0 1
+.names Q2.BLIF Q1.BLIF Q0.BLIF cup1_LED_OUT
+010 1
+000 1
+.names Q5.BLIF Q4.BLIF Q3.BLIF cup2_LED_OUT
+010 1
+000 1
+.names Q8.BLIF Q7.BLIF Q6.BLIF cup3_LED_OUT
+010 1
+000 1
+.names Q11.BLIF Q10.BLIF Q9.BLIF cup4_LED_OUT
+010 1
+000 1
+.names Q14.BLIF Q13.BLIF Q12.BLIF cup5_LED_OUT
+010 1
+000 1
+.names Q17.BLIF Q16.BLIF Q15.BLIF cup6_LED_OUT
+010 1
+000 1
+.names Q20.BLIF Q19.BLIF Q18.BLIF cup7_LED_OUT
+010 1
+000 1
+.names Q23.BLIF Q22.BLIF Q21.BLIF cup8_LED_OUT
+010 1
+000 1
+.names Q26.BLIF Q25.BLIF Q24.BLIF cup9_LED_OUT
+010 1
+000 1
+.names Q29.BLIF Q28.BLIF Q27.BLIF cup10_LED_OUT
+010 1
+000 1
+.names timdiv13.BLIF clk_out
+1 1
+0 0
+.names timdiv13.BLIF diode
+1 1
+0 0
+.names P1>OSCOUT.BLIF osc_out
+1 1
+0 0
+.names P1>TIMEROUT.BLIF tmr_out
+1 1
+0 0
+.names Q2.FB Q2.REG
+1 1
+0 0
+.names Q5.FB Q5.REG
+1 1
+0 0
+.names Q8.FB Q8.REG
+1 1
+0 0
+.names Q11.FB Q11.REG
+1 1
+0 0
+.names Q14.FB Q14.REG
+1 1
+0 0
+.names Q17.FB Q17.REG
+1 1
+0 0
+.names Q20.FB Q20.REG
+1 1
+0 0
+.names Q23.FB Q23.REG
+1 1
+0 0
+.names Q26.FB Q26.REG
+1 1
+0 0
+.names Q29.FB Q29.REG
+1 1
+0 0
+.names osc_dis.BLIF P1>DYNOSCDIS
+1 1
+0 0
+.names osc_rst.BLIF P1>TIMERRES
+1 1
+0 0
+.names tmr_out.BLIF timdiv1.C
+1 1
+0 0
+.names timdiv1.BLIF timdiv2.C
+1 1
+0 0
+.names timdiv2.BLIF timdiv3.C
+1 1
+0 0
+.names timdiv3.BLIF timdiv4.C
+1 1
+0 0
+.names timdiv4.BLIF timdiv5.C
+1 1
+0 0
+.names timdiv5.BLIF timdiv6.C
+1 1
+0 0
+.names timdiv6.BLIF timdiv7.C
+1 1
+0 0
+.names timdiv7.BLIF timdiv8.C
+1 1
+0 0
+.names timdiv8.BLIF timdiv9.C
+1 1
+0 0
+.names timdiv9.BLIF timdiv10.C
+1 1
+0 0
+.names timdiv10.BLIF timdiv11.C
+1 1
+0 0
+.names timdiv11.BLIF timdiv12.C
+1 1
+0 0
+.names timdiv12.BLIF timdiv13.C
+1 1
+0 0
+.names timdiv13.BLIF Q2.C
+1 1
+0 0
+.names timdiv13.BLIF Q1.C
+1 1
+0 0
+.names timdiv13.BLIF Q0.C
+1 1
+0 0
+.names timdiv13.BLIF Q5.C
+1 1
+0 0
+.names timdiv13.BLIF Q4.C
+1 1
+0 0
+.names timdiv13.BLIF Q3.C
+1 1
+0 0
+.names timdiv13.BLIF Q8.C
+1 1
+0 0
+.names timdiv13.BLIF Q7.C
+1 1
+0 0
+.names timdiv13.BLIF Q6.C
+1 1
+0 0
+.names timdiv13.BLIF Q11.C
+1 1
+0 0
+.names timdiv13.BLIF Q10.C
+1 1
+0 0
+.names timdiv13.BLIF Q9.C
+1 1
+0 0
+.names timdiv13.BLIF Q14.C
+1 1
+0 0
+.names timdiv13.BLIF Q13.C
+1 1
+0 0
+.names timdiv13.BLIF Q12.C
+1 1
+0 0
+.names timdiv13.BLIF Q17.C
+1 1
+0 0
+.names timdiv13.BLIF Q16.C
+1 1
+0 0
+.names timdiv13.BLIF Q15.C
+1 1
+0 0
+.names timdiv13.BLIF Q20.C
+1 1
+0 0
+.names timdiv13.BLIF Q19.C
+1 1
+0 0
+.names timdiv13.BLIF Q18.C
+1 1
+0 0
+.names timdiv13.BLIF Q23.C
+1 1
+0 0
+.names timdiv13.BLIF Q22.C
+1 1
+0 0
+.names timdiv13.BLIF Q21.C
+1 1
+0 0
+.names timdiv13.BLIF Q26.C
+1 1
+0 0
+.names timdiv13.BLIF Q25.C
+1 1
+0 0
+.names timdiv13.BLIF Q24.C
+1 1
+0 0
+.names timdiv13.BLIF Q29.C
+1 1
+0 0
+.names timdiv13.BLIF Q28.C
+1 1
+0 0
+.names timdiv13.BLIF Q27.C
+1 1
+0 0
+.end
