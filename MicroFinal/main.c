@@ -67,9 +67,7 @@ void main()
     // Enable ADC interrupt in NVIC module
     NVIC->ISER[0] = 1 << ((ADC14_IRQn) & 31);
 
-    //REF_A_CTL0_VSEL_0 |
-
-    // Turn on ADC14, extend sampling time to avoid overflow of results
+    // Turn on ADC14, set multi conversion, no repeat mode
     ADC14->CTL0 = ADC14_CTL0_ON |
                     ADC14_CTL0_SSEL__MCLK |
                     ADC14_CTL0_DIV__1 |
@@ -78,7 +76,7 @@ void main()
                     ADC14_CTL0_MSC |
 
                     ADC14_CTL0_CONSEQ_1;
-
+    //Configure each channel
     ADC14->MCTL[0] = ADC14_MCTLN_INCH_15;   //Channel A15
     ADC14->MCTL[1] = ADC14_MCTLN_INCH_12;   //Channel A12
     ADC14->MCTL[2] = ADC14_MCTLN_INCH_10;   //Channel A10
@@ -91,9 +89,9 @@ void main()
     ADC14->MCTL[9] = ADC14_MCTLN_INCH_6 | ADC14_MCTLN_EOS; //Channel A6 and end stream
 
     uint32_t stat = ADC14_IER0_IE6 & 0xFFFFFFFF;
-            ADC14->IER0 |= stat;
-            stat = (ADC14_IER0_IE6 << 32);
-            ADC14->IER1 |= (stat);
+    ADC14->IER0 |= stat;
+    stat = (ADC14_IER0_IE6 << 32);
+    ADC14->IER1 |= (stat);
 
     SCB->SCR &= ~SCB_SCR_SLEEPONEXIT_Msk;   // Wake up on exit from ISR
 
@@ -174,11 +172,7 @@ void ADC14_IRQHandler(void) {
         for (i = 0; i < 10; i++) {
             CupCurrent[i] = ADC14->MEM[i];
         }
-       // printf("%l\n",clock() - t1);
         readFlag = 1;
-
-
-        //printADC();
     }
 }
 
