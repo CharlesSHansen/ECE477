@@ -36,12 +36,25 @@ volatile int counter = 0;
 
 void main()
 {
+    volatile unsigned int i;
+    unsigned int diff;
+
+    // ******* GPIO *****************
+    // ******************************
 
     P1->DIR |= BIT0;
-        P1->OUT |= BIT0;
-    //DIR - 0 for output, 1 for input
+    P1->OUT |= BIT0;
 
-    volatile unsigned int i;
+    P2->OUT &= ~BIT5;
+    P2->DIR |= BIT5;
+
+    P1->OUT &= ~BIT0;                       // Clear LED to start
+    P1->DIR |= BIT0;                        // Set P1.0/LED to output
+
+
+    // ***************************************
+    // ***************************************
+
     WDTCTL = WDTPW | WDTHOLD;                 // Stop WDT Interrupt
 
     __enable_irq(); // Enable interrupts
@@ -53,9 +66,6 @@ void main()
     TIMER_A0->CCR[0] = 62500;
     TIMER_A0->CTL = TIMER_A_CTL_SSEL__SMCLK | TIMER_A_CTL_MC__UP | TIMER_A_CTL_ID__8;
     NVIC->ISER[0] = 1 << ((TA0_0_IRQn) & 31);
-
-    //**********************************************************************
-    //**********************************************************************
 
     //********* ADC 14 INTERRUPT CONFIG ************************************
     //**********************************************************************
@@ -120,11 +130,7 @@ void main()
 
 
 
-    P2->OUT &= ~BIT5;
-    P2->DIR |= BIT5;
 
-    P1->OUT &= ~BIT0;                       // Clear LED to start
-    P1->DIR |= BIT0;                        // Set P1.0/LED to output
 
     for (i = 0; i<10; i++) {
         CupPrevious[i] = 0;
@@ -133,41 +139,50 @@ void main()
         BallIn[i] = 0;
     }
 
-    unsigned int diff;
-    //ADC14->CTL0 |= ADC14_CTL0_ENC | ADC14_CTL0_SC;
-    //__sleep();
+
     while (1)
     {
-        if (readFlag == 1) { //NEW VALUE
+
+        //***** IR SENSOR HANDLE *****************
+        //****************************************
+        if (readFlag == 1) { //NEW VALUE READ FROM ADC
             readFlag = 0;
-            printDiffs();
-            CupPrevious[0] = CupCurrent[0];
-            /*
+            //printDiffs();
+
             for(i = 0; i< 1; i++){
                 diff = abs(CupCurrent[i] - CupPrevious[i]);
                 if ((diff > THRESHHOLD)) {// & CupPosition[i] == 1){
                     if(BallIn[i] == 0) {
-                        BallIn[i] = 1;
+                        // BALL ENTERING CUP - FLASH LIGHTS
+                        //BallIn[i] = 1;
                         P2->OUT = ~P2->OUT;
                     }
                     else{
+                        // BALL LEAVING CUP - MOVE MOTOR DOWN
                         CupPosition[i] = 0;
                         BallIn[i] = 0;
-                        if(i == 0)
-                            P2->OUT = ~P2->OUT;                          // P1.0 = 1
+                        P2->OUT = ~P2->OUT;                          // P1.0 = 1
                     }
                 }
-
-            }*/
+                CupPrevious[i] = CupCurrent[i];
+            }
         }
+        //*********************************************
+        //*********************************************
+
+
+
+
     }
 }
 
 void printDiffs() {
     int i;
+    printf("***************************************\n");
     for (i = 0; i < 1; i++) {
         printf("%d\t%d\n",CupPrevious[i],CupCurrent[i]);
     }
+
 }
 
 
