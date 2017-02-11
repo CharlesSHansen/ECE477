@@ -11,7 +11,8 @@
 #include "time.h"
 #include "msp_compatibility.h"
 //#include "msp.h"
-#define THRESHHOLD 4000
+#define THRESHHOLD 3000
+#define WAIT_TIME 6
 #define NVIC_EN0_R              0xE000E100
 
 // Function Prototypes
@@ -31,13 +32,33 @@ volatile uint16_t BallIn[10];
 volatile int readFlag = 0;
 volatile int firstRead = 1;
 volatile int hehe = 0;
+volatile int counter = 0;
 
 void main()
 {
+
+    P1->DIR |= BIT0;
+        P1->OUT |= BIT0;
     //DIR - 0 for output, 1 for input
 
     volatile unsigned int i;
     WDTCTL = WDTPW | WDTHOLD;                 // Stop WDT Interrupt
+
+    __enable_irq(); // Enable interrupts
+
+    //******** TIMER CONFIG ************************************************
+    //**********************************************************************
+
+    TIMER_A0->CCTL[0] = TIMER_A_CCTLN_CCIE; // TACCR0 interrupt enabled
+    TIMER_A0->CCR[0] = 62500;
+    TIMER_A0->CTL = TIMER_A_CTL_SSEL__SMCLK | TIMER_A_CTL_MC__UP | TIMER_A_CTL_ID__8;
+    NVIC->ISER[0] = 1 << ((TA0_0_IRQn) & 31);
+
+    //**********************************************************************
+    //**********************************************************************
+
+    //********* ADC 14 INTERRUPT CONFIG ************************************
+    //**********************************************************************
 
     //IR SENSORS
     /*  CUP0 - P6.0
@@ -61,8 +82,6 @@ void main()
     P6SEL0 &= 0x00;
     P6SEL1 |= BIT0 | BIT1;
     P6SEL0 |= BIT0 | BIT1;
-
-    __enable_irq(); // Enable interrupts
 
     // Enable ADC interrupt in NVIC module
     NVIC->ISER[0] = 1 << ((ADC14_IRQn) & 31);
@@ -94,8 +113,12 @@ void main()
     ADC14->IER1 |= (stat);
 
     SCB->SCR &= ~SCB_SCR_SLEEPONEXIT_Msk;   // Wake up on exit from ISR
-
     HWREG32(NVIC_EN0_R) = 0x01000000;
+
+    //***********************************************************************
+    //***********************************************************************
+
+
 
     P2->OUT &= ~BIT5;
     P2->DIR |= BIT5;
@@ -111,45 +134,56 @@ void main()
     }
 
     unsigned int diff;
-    ADC14->CTL0 |= ADC14_CTL0_ENC | ADC14_CTL0_SC;
+    //ADC14->CTL0 |= ADC14_CTL0_ENC | ADC14_CTL0_SC;
     //__sleep();
     while (1)
     {
-        //while(readFlag == 0){}
-        for (i = 20000; i > 0; i--);        // Delay
-        if (readFlag == 1) {
-            readFlag == 0;
-            printCurrents();
-            ADC14->CTL0 |= ADC14_CTL0_ENC | ADC14_CTL0_SC;
-        }
-
-        //printCurrents();
-        //if (readFlag == 1) {
-        /*readFlag = 0;
-        for(i = 0; i< 1; i++){
-            diff = abs(CupCurrent[i] - CupPrevious[i]);
-            if ((diff > THRESHHOLD)) {// & CupPosition[i] == 1){
-                if(BallIn[i] == 0) {
-                    BallIn[i] = 1;
-                    P2->OUT = ~P2->OUT;
-                }
-                else{
-                    CupPosition[i] = 0;
-                    BallIn[i] = 0;
-                    if(i == 0)
-                        P2->OUT = ~P2->OUT;                          // P1.0 = 1
-                }
-            }
+        if (readFlag == 1) { //NEW VALUE
+            readFlag = 0;
+            printDiffs();
             CupPrevious[0] = CupCurrent[0];
-        }
-       // }
-        // Start sampling/conversion
-        ADC14->CTL0 |= ADC14_CTL0_ENC | ADC14_CTL0_SC;
-       // __sleep();
+            /*
+            for(i = 0; i< 1; i++){
+                diff = abs(CupCurrent[i] - CupPrevious[i]);
+                if ((diff > THRESHHOLD)) {// & CupPosition[i] == 1){
+                    if(BallIn[i] == 0) {
+                        BallIn[i] = 1;
+                        P2->OUT = ~P2->OUT;
+                    }
+                    else{
+                        CupPosition[i] = 0;
+                        BallIn[i] = 0;
+                        if(i == 0)
+                            P2->OUT = ~P2->OUT;                          // P1.0 = 1
+                    }
+                }
 
-       // __no_operation();                   // For debugger*/
+            }*/
+        }
     }
 }
+
+void printDiffs() {
+    int i;
+    for (i = 0; i < 1; i++) {
+        printf("%d\t%d\n",CupPrevious[i],CupCurrent[i]);
+    }
+}
+
+
+void TA0_0_IRQHandler(void) {
+    //BITBAND_PERI(TIMER_A0->CTL,TIMER_A_CTL_IFG_OFS) = 0;
+    TIMER_A0->CCTL[0] &= ~TIMER_A_CCTLN_CCIFG;
+    counter++;
+    if (counter >= WAIT_TIME) {
+        counter = 0;
+        ADC14->CTL0 |= ADC14_CTL0_ENC | ADC14_CTL0_SC;
+        P1->OUT = ~P1->OUT;
+    }
+
+    TIMER_A0->CCR[0] += 1;              // Add Offset to TACCR0
+}
+
 
 void ADC14_IRQHandler(void) {
     uint64_t status;
@@ -159,6 +193,7 @@ void ADC14_IRQHandler(void) {
 
     if(status & ADC14_IER0_IE6)
     {
+        //printf("hey\n");
         if (firstRead == 1) {
             for (i = 0; i < 10; i++) {
                 CupPrevious[i] = ADC14->MEM[i];
