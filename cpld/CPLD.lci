@@ -1,0 +1,145 @@
+
+[Device]
+Family = lc4k;
+PartNumber = LC4256ZE-5TN144C;
+Package = 144TQFP;
+PartType = LC4256ZE;
+Speed = -5.8;
+Operating_condition = COM;
+Status = Production;
+
+[Revision]
+Parent = lc4k256e.lci;
+DATE = 02/08/2017;
+TIME = 21:11:24;
+Source_Format = ABEL_Schematic;
+Synthesis = Synplify;
+
+[Ignore Assignments]
+
+[Clear Assignments]
+
+[Backannotate Assignments]
+
+[Global Constraints]
+
+[Location Assignments]
+layer = OFF;
+nRST = pin,53,-,-,-;
+clk_out = pin,52,-,-,-;
+diode = pin,70,-,-,-;
+cup1_motor_D = pin,4,-,-,-;
+cup1_motor_U = pin,5,-,-,-;
+cup1_LED_OUT = pin,28,-,-,-;
+cup2_motor_D = pin,6,-,-,-;
+cup2_motor_U = pin,7,-,-,-;
+cup2_LED_OUT = pin,29,-,-,-;
+cup3_motor_D = pin,8,-,-,-;
+cup3_motor_U = pin,9,-,-,-;
+cup3_LED_OUT = pin,30,-,-,-;
+cup4_motor_D = pin,11,-,-,-;
+cup4_motor_U = pin,12,-,-,-;
+cup4_LED_OUT = pin,31,-,-,-;
+cup5_motor_D = pin,13,-,-,-;
+cup5_motor_U = pin,14,-,-,-;
+cup5_LED_OUT = pin,32,-,-,-;
+cup6_motor_D = pin,15,-,-,-;
+cup6_motor_U = pin,16,-,-,-;
+cup6_LED_OUT = pin,33,-,-,-;
+cup7_motor_D = pin,17,-,-,-;
+cup7_motor_U = pin,20,-,-,-;
+cup7_LED_OUT = pin,39,-,-,-;
+cup8_motor_D = pin,21,-,-,-;
+cup8_motor_U = pin,22,-,-,-;
+cup8_LED_OUT = pin,40,-,-,-;
+cup9_motor_D = pin,23,-,-,-;
+cup9_motor_U = pin,24,-,-,-;
+cup9_LED_OUT = pin,41,-,-,-;
+cup10_motor_D = pin,25,-,-,-;
+cup10_motor_U = pin,26,-,-,-;
+cup10_LED_OUT = pin,42,-,-,-;
+
+[Group Assignments]
+layer = OFF;
+
+[Resource Reservations]
+layer = OFF;
+
+[Fitter Report Format]
+
+[Power]
+
+[Source Constraint Option]
+
+[Fast Bypass]
+
+[OSM Bypass]
+
+[Input Registers]
+
+[Netlist/Delay Format]
+
+[IO Types]
+layer = OFF;
+
+[Pullup]
+
+[Slewrate]
+
+[Region]
+
+[Timing Constraints]
+
+[HSI Attributes]
+
+[Input Delay]
+
+[Pin attributes list]
+
+[Attributes list setting]
+
+[Power Guard]
+
+[opt global constraints list]
+
+[Explorer User Settings]
+
+[LOCATION ASSIGNMENTS LIST]
+
+[RESOURCE RESERVATIONS LIST]
+
+[individual constraints list]
+
+[Timing Analyzer]
+
+[ORP Bypass]
+
+[PLL Assignments]
+
+[Register Powerup]
+
+[global constraints list]
+
+[Global Constraints Process Update]
+
+[Explorer Results]
+
+[VHDL synplify constraints]
+
+[VHDL spectrum constraints]
+
+[verilog synplify constraints]
+
+[verilog spectrum constraints]
+
+[VHDL synplify constraints list]
+
+[VHDL spectrum constraints list]
+
+[verilog synplify constraints list]
+
+[verilog spectrum constraints list]
+
+[OSCTIMER Assignments]
+layer = OFF;
+OSCTIMER = osc_dis, osc_rst, osc_out, tmr_out, 2000000;
