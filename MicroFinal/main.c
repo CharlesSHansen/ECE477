@@ -16,10 +16,6 @@
 #define NVIC_EN0_R              0xE000E100
 
 // Function Prototypes
-void rotate_f(void);         //Forward run funtion
-void rotate_b(void);         //Backward run function
-void breaks(void);         //Motor stop function
-void delay(void);           //Some delay
 void printCurrents(void);
 void clearInterrupt(uint64_t);
 uint64_t getStatus();
@@ -42,11 +38,11 @@ void main()
     // ******* GPIO *****************
     // ******************************
 
-    P1->DIR |= BIT0;
-    P1->OUT |= BIT0;
+    P1->DIR |= BIT0 | BIT6 | BIT7;
+    P1->OUT &= BIT0;
 
-    P2->OUT &= ~BIT5;
-    P2->DIR |= BIT5;
+   // P2->OUT &= ~BIT5;
+    //P2->DIR |= BIT5;
 
     P1->OUT &= ~BIT0;                       // Clear LED to start
     P1->DIR |= BIT0;                        // Set P1.0/LED to output
@@ -62,10 +58,20 @@ void main()
     //******** TIMER CONFIG ************************************************
     //**********************************************************************
 
-    TIMER_A0->CCTL[0] = TIMER_A_CCTLN_CCIE; // TACCR0 interrupt enabled
-    TIMER_A0->CCR[0] = 62500;
-    TIMER_A0->CTL = TIMER_A_CTL_SSEL__SMCLK | TIMER_A_CTL_MC__UP | TIMER_A_CTL_ID__8;
-    NVIC->ISER[0] = 1 << ((TA0_0_IRQn) & 31);
+    TIMER_A1->CCTL[0] = TIMER_A_CCTLN_CCIE; // TACCR0 interrupt enabled
+    TIMER_A1->CCR[0] = 62500;
+    TIMER_A1->CTL = TIMER_A_CTL_SSEL__SMCLK | TIMER_A_CTL_MC__UP | TIMER_A_CTL_ID__8;
+    NVIC->ISER[0] = 1 << ((TA1_0_IRQn) & 31);
+
+
+
+    P2DIR |= BIT4;
+    P2SEL0 |= BIT4;
+    P2SEL1 &= ~BIT4;
+    //MAP_Timer_A_generatePWM(TIMER_A1_BASE, &pwmConfig);
+
+    setPWM(0);
+
 
     //********* ADC 14 INTERRUPT CONFIG ************************************
     //**********************************************************************
@@ -128,10 +134,6 @@ void main()
     //***********************************************************************
     //***********************************************************************
 
-
-
-
-
     for (i = 0; i<10; i++) {
         CupPrevious[i] = 0;
         CupCurrent[i] = 0;
@@ -154,14 +156,16 @@ void main()
                 if ((diff > THRESHHOLD)) {// & CupPosition[i] == 1){
                     if(BallIn[i] == 0) {
                         // BALL ENTERING CUP - FLASH LIGHTS
-                        //BallIn[i] = 1;
-                        P2->OUT = ~P2->OUT;
+                        BallIn[i] = 1;
+                        setPWM(3200);
+                        //P2->OUT = ~P2->OUT;
                     }
                     else{
                         // BALL LEAVING CUP - MOVE MOTOR DOWN
                         CupPosition[i] = 0;
                         BallIn[i] = 0;
-                        P2->OUT = ~P2->OUT;                          // P1.0 = 1
+                        setPWM(0);
+                        //P2->OUT = ~P2->OUT;                          // P1.0 = 1
                     }
                 }
                 CupPrevious[i] = CupCurrent[i];
@@ -185,19 +189,39 @@ void printDiffs() {
 
 }
 
+void setPWM(int cycle) {
+    TIMER_A0->CTL &= ~TIMER_A_CTL_ID__8;
+    TIMER_A0->EX0 &= ~TIMER_A_EX0_IDEX_MASK;
+    TIMER_A0->CTL |= TIMER_A_CTL_ID__8;
+    TIMER_A0->EX0 = TIMER_A_EX0_TAIDEX_0;
 
-void TA0_0_IRQHandler(void) {
+    //hrheheheh
+    TIMER_A0->CTL &= ~(TIMER_A_CTL_SSEL__INCLK + TIMER_A_CTL_MC_3 + TIMER_A_CTL_IE);
+    TIMER_A0-> CTL |= TIMER_A_CTL_SSEL__SMCLK + TIMER_A_CTL_MC_1 + TIMER_A_CTL_CLR;
+    TIMER_A0->CCR[0] = 32000;
+    TIMER_A0->CCTL[0] &= ~(TIMER_A_CCTLN_CCIE + TIMER_A_CCTLN_OUTMOD_7);
+    uint8_t idx = (0x04>>1) - 1;
+    TIMER_A0->CCTL[idx] |= TIMER_A_CCTLN_OUTMOD_7;
+    TIMER_A0->CCR[idx] = cycle;
+}
+
+
+void TA1_0_IRQHandler(void) {
     //BITBAND_PERI(TIMER_A0->CTL,TIMER_A_CTL_IFG_OFS) = 0;
-    TIMER_A0->CCTL[0] &= ~TIMER_A_CCTLN_CCIFG;
+    TIMER_A1->CCTL[0] &= ~TIMER_A_CCTLN_CCIFG;
     counter++;
     if (counter >= WAIT_TIME) {
         counter = 0;
         ADC14->CTL0 |= ADC14_CTL0_ENC | ADC14_CTL0_SC;
-        P1->OUT = ~P1->OUT;
+        //P1->OUT = ~P1->OUT;
     }
 
-    TIMER_A0->CCR[0] += 1;              // Add Offset to TACCR0
+
+    //P1->OUT ^= BIT6;
+    TIMER_A1->CCR[0] += 1;              // Add Offset to TACCR0
 }
+
+
 
 
 void ADC14_IRQHandler(void) {
