@@ -1,0 +1,205 @@
+|--------------------------------------------------- ----------|
+|- ispLEVER Classic 2.0.00.17.20.15 Equations File            -|
+|- Copyright(C), 1992-2012, Lattice Semiconductor Corporation -|
+|- All Rights Reserved.                                       -|
+|--------------------------------------------------------------|
+
+
+Equations:
+
+
+Q0.D = !nRST & !Q0.Q & Q1.Q & !Q2.Q
+    # !nRST & cup1_motor_D & !Q1.Q & !Q2.Q
+    # !nRST & !cup1_motor_U & Q1.Q & !Q2.Q ; (3 pterms, 6 signals)
+Q0.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q1.D = !nRST & cup1_motor_D & !Q0.Q & Q1.Q & !Q2.Q
+    # !nRST & Q0.Q & !Q1.Q & !Q2.Q
+    # !nRST & !cup1_motor_U & Q0.Q & !Q2.Q ; (3 pterms, 6 signals)
+Q1.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q10.D = !nRST & cup4_motor_D & !Q9.Q & Q10.Q & !Q11.Q
+    # !nRST & Q9.Q & !Q10.Q & !Q11.Q
+    # !nRST & !cup4_motor_U & Q9.Q & !Q11.Q ; (3 pterms, 6 signals)
+Q10.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q11.D = Q11.Q ; (1 pterm, 1 signal)
+Q11.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q12.D = !nRST & !Q12.Q & Q13.Q & !Q14.Q
+    # !nRST & cup5_motor_D & !Q13.Q & !Q14.Q
+    # !nRST & !cup5_motor_U & Q13.Q & !Q14.Q ; (3 pterms, 6 signals)
+Q12.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q13.D = !nRST & cup5_motor_D & !Q12.Q & Q13.Q & !Q14.Q
+    # !nRST & Q12.Q & !Q13.Q & !Q14.Q
+    # !nRST & !cup5_motor_U & Q12.Q & !Q14.Q ; (3 pterms, 6 signals)
+Q13.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q14.D = Q14.Q ; (1 pterm, 1 signal)
+Q14.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q15.D = !nRST & !Q15.Q & Q16.Q & !Q17.Q
+    # !nRST & cup6_motor_D & !Q16.Q & !Q17.Q
+    # !nRST & !cup6_motor_U & Q16.Q & !Q17.Q ; (3 pterms, 6 signals)
+Q15.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q16.D = !nRST & cup6_motor_D & !Q15.Q & Q16.Q & !Q17.Q
+    # !nRST & Q15.Q & !Q16.Q & !Q17.Q
+    # !nRST & !cup6_motor_U & Q15.Q & !Q17.Q ; (3 pterms, 6 signals)
+Q16.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q17.D = Q17.Q ; (1 pterm, 1 signal)
+Q17.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q18.D = !nRST & !Q18.Q & Q19.Q & !Q20.Q
+    # !nRST & cup7_motor_D & !Q19.Q & !Q20.Q
+    # !nRST & !cup7_motor_U & Q19.Q & !Q20.Q ; (3 pterms, 6 signals)
+Q18.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q19.D = !nRST & cup7_motor_D & !Q18.Q & Q19.Q & !Q20.Q
+    # !nRST & Q18.Q & !Q19.Q & !Q20.Q
+    # !nRST & !cup7_motor_U & Q18.Q & !Q20.Q ; (3 pterms, 6 signals)
+Q19.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q2.D = Q2.Q ; (1 pterm, 1 signal)
+Q2.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q20.D = Q20.Q ; (1 pterm, 1 signal)
+Q20.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q21.D = !nRST & !Q21.Q & Q22.Q & !Q23.Q
+    # !nRST & cup8_motor_D & !Q22.Q & !Q23.Q
+    # !nRST & !cup8_motor_U & Q22.Q & !Q23.Q ; (3 pterms, 6 signals)
+Q21.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q22.D = !nRST & cup8_motor_D & !Q21.Q & Q22.Q & !Q23.Q
+    # !nRST & Q21.Q & !Q22.Q & !Q23.Q
+    # !nRST & !cup8_motor_U & Q21.Q & !Q23.Q ; (3 pterms, 6 signals)
+Q22.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q23.D = Q23.Q ; (1 pterm, 1 signal)
+Q23.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q24.D = !nRST & !Q24.Q & Q25.Q & !Q26.Q
+    # !nRST & cup9_motor_D & !Q25.Q & !Q26.Q
+    # !nRST & !cup9_motor_U & Q25.Q & !Q26.Q ; (3 pterms, 6 signals)
+Q24.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q25.D = !nRST & cup9_motor_D & !Q24.Q & Q25.Q & !Q26.Q
+    # !nRST & Q24.Q & !Q25.Q & !Q26.Q
+    # !nRST & !cup9_motor_U & Q24.Q & !Q26.Q ; (3 pterms, 6 signals)
+Q25.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q26.D = Q26.Q ; (1 pterm, 1 signal)
+Q26.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q27.D = !nRST & !Q27.Q & Q28.Q & !Q29.Q
+    # !nRST & cup10_motor_D & !Q28.Q & !Q29.Q
+    # !nRST & !cup10_motor_U & Q28.Q & !Q29.Q ; (3 pterms, 6 signals)
+Q27.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q28.D = !nRST & cup10_motor_D & !Q27.Q & Q28.Q & !Q29.Q
+    # !nRST & Q27.Q & !Q28.Q & !Q29.Q
+    # !nRST & !cup10_motor_U & Q27.Q & !Q29.Q ; (3 pterms, 6 signals)
+Q28.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q29.D = Q29.Q ; (1 pterm, 1 signal)
+Q29.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q3.D = !nRST & !Q3.Q & Q4.Q & !Q5.Q
+    # !nRST & cup2_motor_D & !Q4.Q & !Q5.Q
+    # !nRST & !cup2_motor_U & Q4.Q & !Q5.Q ; (3 pterms, 6 signals)
+Q3.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q4.D = !nRST & cup2_motor_D & !Q3.Q & Q4.Q & !Q5.Q
+    # !nRST & Q3.Q & !Q4.Q & !Q5.Q
+    # !nRST & !cup2_motor_U & Q3.Q & !Q5.Q ; (3 pterms, 6 signals)
+Q4.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q5.D = Q5.Q ; (1 pterm, 1 signal)
+Q5.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q6.D = !nRST & !Q6.Q & Q7.Q & !Q8.Q
+    # !nRST & cup3_motor_D & !Q7.Q & !Q8.Q
+    # !nRST & !cup3_motor_U & Q7.Q & !Q8.Q ; (3 pterms, 6 signals)
+Q6.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q7.D = !nRST & cup3_motor_D & !Q6.Q & Q7.Q & !Q8.Q
+    # !nRST & Q6.Q & !Q7.Q & !Q8.Q
+    # !nRST & !cup3_motor_U & Q6.Q & !Q8.Q ; (3 pterms, 6 signals)
+Q7.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q8.D = Q8.Q ; (1 pterm, 1 signal)
+Q8.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q9.D = !nRST & !Q9.Q & Q10.Q & !Q11.Q
+    # !nRST & cup4_motor_D & !Q10.Q & !Q11.Q
+    # !nRST & !cup4_motor_U & Q10.Q & !Q11.Q ; (3 pterms, 6 signals)
+Q9.C = clk_out.Q ; (1 pterm, 1 signal)
+
+_dup_osc_dis = 0 ; (0 pterm, 0 signal)
+
+clk_out.D = !clk_out.Q ; (1 pterm, 1 signal)
+clk_out.C = timdiv12.Q ; (1 pterm, 1 signal)
+
+cup10_LED_OUT = !Q27.Q & !Q29.Q ; (1 pterm, 2 signals)
+
+cup1_LED_OUT = !Q0.Q & !Q2.Q ; (1 pterm, 2 signals)
+
+cup2_LED_OUT = !Q3.Q & !Q5.Q ; (1 pterm, 2 signals)
+
+cup3_LED_OUT = !Q6.Q & !Q8.Q ; (1 pterm, 2 signals)
+
+cup4_LED_OUT = !Q9.Q & !Q11.Q ; (1 pterm, 2 signals)
+
+cup5_LED_OUT = !Q12.Q & !Q14.Q ; (1 pterm, 2 signals)
+
+cup6_LED_OUT = !Q15.Q & !Q17.Q ; (1 pterm, 2 signals)
+
+cup7_LED_OUT = !Q18.Q & !Q20.Q ; (1 pterm, 2 signals)
+
+cup8_LED_OUT = !Q21.Q & !Q23.Q ; (1 pterm, 2 signals)
+
+cup9_LED_OUT = !Q24.Q & !Q26.Q ; (1 pterm, 2 signals)
+
+diode = clk_out.Q ; (1 pterm, 1 signal)
+
+osc_dis = 0 ; (0 pterm, 0 signal)
+
+timdiv1.D = !timdiv1.Q ; (1 pterm, 1 signal)
+timdiv1.C = tmr_out ; (1 pterm, 1 signal)
+
+timdiv10.D = !timdiv10.Q ; (1 pterm, 1 signal)
+timdiv10.C = timdiv9.Q ; (1 pterm, 1 signal)
+
+timdiv11.D = !timdiv11.Q ; (1 pterm, 1 signal)
+timdiv11.C = timdiv10.Q ; (1 pterm, 1 signal)
+
+timdiv12.D = !timdiv12.Q ; (1 pterm, 1 signal)
+timdiv12.C = timdiv11.Q ; (1 pterm, 1 signal)
+
+timdiv2.D = !timdiv2.Q ; (1 pterm, 1 signal)
+timdiv2.C = timdiv1.Q ; (1 pterm, 1 signal)
+
+timdiv3.D = !timdiv3.Q ; (1 pterm, 1 signal)
+timdiv3.C = timdiv2.Q ; (1 pterm, 1 signal)
+
+timdiv4.D = !timdiv4.Q ; (1 pterm, 1 signal)
+timdiv4.C = timdiv3.Q ; (1 pterm, 1 signal)
+
+timdiv5.D = !timdiv5.Q ; (1 pterm, 1 signal)
+timdiv5.C = timdiv4.Q ; (1 pterm, 1 signal)
+
+timdiv6.D = !timdiv6.Q ; (1 pterm, 1 signal)
+timdiv6.C = timdiv5.Q ; (1 pterm, 1 signal)
+
+timdiv7.D = !timdiv7.Q ; (1 pterm, 1 signal)
+timdiv7.C = timdiv6.Q ; (1 pterm, 1 signal)
+
+timdiv8.D = !timdiv8.Q ; (1 pterm, 1 signal)
+timdiv8.C = timdiv7.Q ; (1 pterm, 1 signal)
+
+timdiv9.D = !timdiv9.Q ; (1 pterm, 1 signal)
+timdiv9.C = timdiv8.Q ; (1 pterm, 1 signal)
+

@@ -1,0 +1,67 @@
+//
+// Software Version :  ispLEVER Classic 2.0.00.17.20.15  
+// Project Name	    :  cpld
+// Targeted Device  :  LC4256ZE-5TN144C
+// Date             :  Thu Feb 09 15:58:02 2017
+//
+                      GND          SYS           1
+                   VCCIO0          SYS           3
+             cup1_motor_D          IN            4
+             cup1_motor_U          IN            5
+             cup2_motor_D          IN            6
+             cup2_motor_U          IN            7
+             cup3_motor_D          IN            8
+             cup3_motor_U          IN            9
+                   GNDIO0          SYS           10
+             cup4_motor_D          IN            11
+             cup4_motor_U          IN            12
+             cup5_motor_D          IN            13
+             cup5_motor_U          IN            14
+             cup6_motor_D          IN            15
+             cup6_motor_U          IN            16
+             cup7_motor_D          IN            17
+                   VCCIO0          SYS           19
+             cup7_motor_U          IN            20
+             cup8_motor_D          IN            21
+             cup8_motor_U          IN            22
+             cup9_motor_D          IN            23
+             cup9_motor_U          IN            24
+            cup10_motor_D          IN            25
+            cup10_motor_U          IN            26
+                   GNDIO0          SYS           27
+             cup1_LED_OUT          OUT           28
+             cup2_LED_OUT          OUT           29
+             cup3_LED_OUT          OUT           30
+             cup4_LED_OUT          OUT           31
+             cup5_LED_OUT          OUT           32
+             cup6_LED_OUT          OUT           33
+                   VCCIO0          SYS           34
+                      VCC          SYS           36
+                      GND          SYS           37
+             cup7_LED_OUT          OUT           39
+             cup8_LED_OUT          OUT           40
+             cup9_LED_OUT          OUT           41
+            cup10_LED_OUT          OUT           42
+                   GNDIO0          SYS           46
+                   VCCIO0          SYS           47
+                  clk_out          OUT           52
+                     nRST          IN            53
+                   GNDIO1          SYS           55
+                      VCC          SYS           57
+                   VCCIO1          SYS           64
+                   GNDIO1          SYS           65
+                    diode          OUT           70
+                      GND          SYS           73
+                   VCCIO1          SYS           75
+                   GNDIO1          SYS           82
+                   VCCIO1          SYS           91
+                   GNDIO1          SYS           99
+                   VCCIO1          SYS           106
+                      VCC          SYS           108
+                      GND          SYS           109
+                   GNDIO1          SYS           118
+                   VCCIO1          SYS           119
+                   GNDIO0          SYS           127
+                      VCC          SYS           129
+                   VCCIO0          SYS           136
+                   GNDIO0          SYS           137

@@ -1,0 +1,772 @@
+|--------------------------------------------------------------|
+|- ispLEVER Classic 2.0.00.17.20.15 Fitter Report File        -|
+|- Copyright(C), 1992-2012, Lattice Semiconductor Corporation -|
+|- All Rights Reserved.                                       -|
+|--------------------------------------------------------------|
+
+
+
+
+The Basic/Detailed Report Format can be selected in the dialog box
+Tools->Fitter Report File Format...
+
+Project_Summary
+~~~~~~~~~~~~~~~
+Project Name         :  cpld
+Project Path         :  C:\Users\pcadmin\Documents\CPLD
+Project Fitted on    :  Thu Feb 09 15:58:02 2017
+
+Device               :  M4256_96
+Package              :  144
+GLB Input Mux Size   :  33
+Available Blocks     :  16
+Speed                :  -5.8
+Part Number          :  LC4256ZE-5TN144C
+Source Format        :  ABEL_Schematic
+
+
+// Project 'cpld' Fit Successfully! //
+
+
+Compilation_Times
+~~~~~~~~~~~~~~~~~
+Prefit Time                     0 secs
+Load Design Time                0.01 secs
+Partition Time                  0.05 secs
+Place Time                      0.00 secs
+Route Time                      0.00 secs
+Total Fit Time                  00:00:01
+
+
+Design_Summary
+~~~~~~~~~~~~~~
+Total Input Pins                21
+Total Logic Functions           58
+  Total Output Pins             12
+  Total Bidir I/O Pins          0
+  Total Buried Nodes            46
+Total Flip-Flops                43
+  Total D Flip-Flops            43
+  Total T Flip-Flops            0
+  Total Latches                 0
+Total Product Terms             137
+
+Total Reserved Pins             0
+Total Locked Pins               33
+Total Locked Nodes              2
+
+Total Unique Output Enables     0
+Total Unique Clocks             14
+Total Unique Clock Enables      0
+Total Unique Resets             0
+Total Unique Presets            0
+
+Fmax Logic Levels               -
+
+
+Device_Resource_Summary
+~~~~~~~~~~~~~~~~~~~~~~~
+                                 Device
+                                 Total    Used   Not Used   Utilization
+-----------------------------------------------------------------------
+Dedicated Pins
+  Clock/Input Pins                  4        0      4    -->     0
+  Input-Only Pins                  10        2      8    -->    20
+  I/O / Enable Pins                 2        0      2    -->     0
+I/O Pins                           94       31     63    -->    32
+Logic Functions                   256       57    199    -->    22
+  Input Registers                  96        0     96    -->     0
+
+GLB Inputs                        576      103    473    -->    17
+Logical Product Terms            1280      106   1174    -->     8
+Occupied GLBs                      16       13      3    -->    81
+Macrocells                        256       56    200    -->    21
+
+Control Product Terms:
+  GLB Clock/Clock Enables          16       11      5    -->    68
+  GLB Reset/Presets                16        0     16    -->     0
+  Macrocell Clocks                256       12    244    -->     4
+  Macrocell Clock Enables         256        0    256    -->     0
+  Macrocell Enables               256        0    256    -->     0
+  Macrocell Resets                256        0    256    -->     0
+  Macrocell Presets               256        0    256    -->     0
+
+Global Routing Pool               356       65    291    -->    18
+  GRP from IFB                     ..       19     ..    -->    ..
+    (from input signals)           ..       19     ..    -->    ..
+    (from output signals)          ..        0     ..    -->    ..
+    (from bidir signals)           ..        0     ..    -->    ..
+  GRP from MFB                     ..       46     ..    -->    ..
+----------------------------------------------------------------------
+
+<Note> 1 : The available PT is the product term that has not been used.
+<Note> 2 : IFB is I/O feedback.
+<Note> 3 : MFB is macrocell feedback.
+
+
+
+GLB_Resource_Summary
+~~~~~~~~~~~~~~~~~~~~
+                                                                                     # of PT
+               ---  Fanin  ---    I/O    Input  Macrocells       Macrocells   Logic  clusters
+             Unique Shared Total  Pins    Regs Used Inaccessible  available    PTs   used
+-------------------------------------------------------------------------------------------
+Maximum
+  GLB                      36      *(1)     8   --     --             16       80       16
+-------------------------------------------------------------------------------------------
+  GLB    A      2    11    13      0/6      0    8      0              8       17        8
+  GLB    B      2     6     8      0/6      0    7      0              9       13        7
+  GLB    C      0     7     7      6/6      0    4      0             12        7        4
+  GLB    D      0     0     0      6/6      0    0      0             16        0        0
+-------------------------------------------------------------------------------------------
+  GLB    E      0     0     0      6/6      0    0      0             16        0        0
+  GLB    F      9     8    17      6/6      0   11      0              5       14       11
+  GLB    G      7     8    15      4/6      0    8      0              8       12        8
+  GLB    H      1     7     8      2/6      0    4      0             12        9        4
+-------------------------------------------------------------------------------------------
+  GLB    I      0     7     7      0/6      0    3      0             13        7        3
+  GLB    J      0     7     7      1/6      0    3      0             13        7        3
+  GLB    K      0     0     0      0/6      0    0      0             16        0        0
+  GLB    L      0     7     7      0/6      0    3      0             13        7        3
+-------------------------------------------------------------------------------------------
+  GLB    M      0     0     0      0/6      0    0      0             16        0        0
+  GLB    N      0     7     7      0/6      0    2      0             14        6        2
+  GLB    O      0     0     0      0/6      0    0      0             16        0        0
+  GLB    P      0     7     7      0/6      0    3      0             13        7        3
+-------------------------------------------------------------------------------------------
+TOTALS:        21    82   103     31/96     0   56      0            200      106       56
+
+<Note> 1 : For ispMACH 4000 devices, the number of IOs depends on the GLB.
+<Note> 2 : Four rightmost columns above reflect last status of the placement process.
+
+
+
+GLB_Control_Summary
+~~~~~~~~~~~~~~~~~~~
+           Shared Shared | Mcell  Mcell  Mcell  Mcell  Mcell 
+           Clk/CE Rst/Pr | Clock  CE     Enable Reset  Preset
+------------------------------------------------------------------------------
+Maximum
+  GLB        1      1        16     16     16     16     16  
+==============================================================================
+  GLB    A   1      0         5      0      0      0      0
+  GLB    B   1      0         6      0      0      0      0
+  GLB    C   1      0         0      0      0      0      0
+  GLB    D   0      0         0      0      0      0      0
+------------------------------------------------------------------------------
+  GLB    E   0      0         0      0      0      0      0
+  GLB    F   1      0         0      0      0      0      0
+  GLB    G   1      0         0      0      0      0      0
+  GLB    H   1      0         1      0      0      0      0
+------------------------------------------------------------------------------
+  GLB    I   1      0         0      0      0      0      0
+  GLB    J   1      0         0      0      0      0      0
+  GLB    K   0      0         0      0      0      0      0
+  GLB    L   1      0         0      0      0      0      0
+------------------------------------------------------------------------------
+  GLB    M   0      0         0      0      0      0      0
+  GLB    N   1      0         0      0      0      0      0
+  GLB    O   0      0         0      0      0      0      0
+  GLB    P   1      0         0      0      0      0      0
+------------------------------------------------------------------------------
+
+<Note> 1 : For ispMACH 4000 devices, the number of output enables depends on the GLB.
+
+
+
+Optimizer_and_Fitter_Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pin Assignment :                       Yes
+Group Assignment :                     No
+Pin Reservation :                      No
+
+@Ignore_Project_Constraints :
+  Pin Assignments :                    No
+      Keep Block Assignment            --
+      Keep Segment Assignment          --
+  Group Assignments :                  No
+  Macrocell Assignment :               No
+      Keep Block Assignment            --
+      Keep Segment Assignment          --
+
+@Backannotate_Project_Constraints
+  Pin Assignments :                    No
+  Pin And Block Assignments :          No
+  Pin, Macrocell and Block :           No
+
+@Timing_Constraints :                  No
+
+@Global_Project_Optimization :
+  Balanced Partitioning :              Yes
+  Spread Placement :                   Yes
+
+  Note :
+    Pack Design :
+       Balanced Partitioning = No
+       Spread Placement      = No
+    Spread Design :
+       Balanced Partitioning = Yes
+       Spread Placement      = Yes
+
+
+@Logic_Synthesis :
+  Logic Reduction :                    Yes
+  Node Collapsing :                    FMAX
+  Fmax_Logic_Level :                   1
+  D/T Synthesis :                      Yes
+  XOR Synthesis :                      Yes
+  Max. P-Term for Collapsing :         16
+  Max. P-Term for Splitting :          80
+  Max Symbols :                        24
+
+@Utilization_options
+  Max. % of Macrocells used :          100
+@Usercode                               (HEX)
+@IO_Types                              Default = LVCMOS18 (2)
+@Output_Slew_Rate                      Default = FAST (2)
+@Power                                 Default = HIGH (2)
+@Pull                                  Default = PULLUP_DOWN (2)
+@Input_Registers                       Default = None (2)
+@Register_Powerup                      Default = None
+
+Device Options:
+<Note> 1 : Reserved unused I/Os can be independently driven to Low or High, and does not
+           follow the drive level set for the Global Configure Unused I/O Option.
+<Note> 2 : For user-specified constraints on individual signals, refer to the Output,
+           Bidir and Buried Signal Lists.
+
+
+
+OSCTIMER_Summary
+~~~~~~~~~~~~~~~~
+OSCTIMER:                         Pin/Node
+  OSCTIMER Instance Name                    P1
+  Dynamic Disable Signal                    osc_dis
+  Timer Reset Signal                        _dup_osc_dis
+  Oscillator Output Clock         mfb C-15  osc_out
+  Timer Output Clock              mfb F-15  tmr_out
+
+  Oscillator Output Clock Frequency         5.0000 MHz
+  Timer Output Clock Frequency              39.0625 KHz
+  Timer Divider                             128
+
+
+Pinout_Listing
+~~~~~~~~~~~~~~
+      | Pin   | Bank |GLB |Assigned|                 | Signal|            | PG
+Pin No| Type  |Number|Pad |Pin     |     I/O Type    | Type  | Signal name| Enable
+------------------------------------------------------------------------------------
+1     | GND   |   -  |    |        |                 |       |            |
+2     | TDI   |   -  |    |        |                 |       |            |
+3     |VCCIO0 |   -  |    |        |                 |       |            |
+4     |  I_O  |   0  |C12 |    *   |LVCMOS18         | Input |cup1_motor_D|
+5     |  I_O  |   0  |C10 |    *   |LVCMOS18         | Input |cup1_motor_U|
+6     |  I_O  |   0  |C8  |    *   |LVCMOS18         | Input |cup2_motor_D|
+7     |  I_O  |   0  |C6  |    *   |LVCMOS18         | Input |cup2_motor_U|
+8     |  I_O  |   0  |C4  |    *   |LVCMOS18         | Input |cup3_motor_D|
+9     |  I_O  |   0  |C2  |    *   |LVCMOS18         | Input |cup3_motor_U|
+10    |GNDIO0 |   -  |    |        |                 |       |            |
+11    |  I_O  |   0  |D14 |    *   |LVCMOS18         | Input |cup4_motor_D|
+12    |  I_O  |   0  |D12 |    *   |LVCMOS18         | Input |cup4_motor_U|
+13    |  I_O  |   0  |D10 |    *   |LVCMOS18         | Input |cup5_motor_D|
+14    |  I_O  |   0  |D8  |    *   |LVCMOS18         | Input |cup5_motor_U|
+15    |  I_O  |   0  |D6  |    *   |LVCMOS18         | Input |cup6_motor_D|
+16    |  I_O  |   0  |D4  |    *   |LVCMOS18         | Input |cup6_motor_U|
+17    | IN0   |   0  |    |    *   |LVCMOS18         | Input |cup7_motor_D|
+18    | NC    |   -  |    |        |                 |       |            |
+19    |VCCIO0 |   -  |    |        |                 |       |            |
+20    | IN1   |   0  |    |    *   |LVCMOS18         | Input |cup7_motor_U|
+21    |  I_O  |   0  |E2  |    *   |LVCMOS18         | Input |cup8_motor_D|
+22    |  I_O  |   0  |E4  |    *   |LVCMOS18         | Input |cup8_motor_U|
+23    |  I_O  |   0  |E6  |    *   |LVCMOS18         | Input |cup9_motor_D|
+24    |  I_O  |   0  |E8  |    *   |LVCMOS18         | Input |cup9_motor_U|
+25    |  I_O  |   0  |E10 |    *   |LVCMOS18         | Input |cup10_motor_|
+26    |  I_O  |   0  |E12 |    *   |LVCMOS18         | Input |cup10_motor_|
+27    |GNDIO0 |   -  |    |        |                 |       |            |
+28    |  I_O  |   0  |F2  |    *   |LVCMOS18         | Output|cup1_LED_OUT|
+29    |  I_O  |   0  |F4  |    *   |LVCMOS18         | Output|cup2_LED_OUT|
+30    |  I_O  |   0  |F6  |    *   |LVCMOS18         | Output|cup3_LED_OUT|
+31    |  I_O  |   0  |F8  |    *   |LVCMOS18         | Output|cup4_LED_OUT|
+32    |  I_O  |   0  |F10 |    *   |LVCMOS18         | Output|cup5_LED_OUT|
+33    |  I_O  |   0  |F12 |    *   |LVCMOS18         | Output|cup6_LED_OUT|
+34    |VCCIO0 |   -  |    |        |                 |       |            |
+35    | TCK   |   -  |    |        |                 |       |            |
+36    | VCC   |   -  |    |        |                 |       |            |
+37    | GND   |   -  |    |        |                 |       |            |
+38    | IN2   |   0  |    |        |                 |       |            |
+39    |  I_O  |   0  |G12 |    *   |LVCMOS18         | Output|cup7_LED_OUT|
+40    |  I_O  |   0  |G10 |    *   |LVCMOS18         | Output|cup8_LED_OUT|
+41    |  I_O  |   0  |G8  |    *   |LVCMOS18         | Output|cup9_LED_OUT|
+42    |  I_O  |   0  |G6  |    *   |LVCMOS18         | Output|cup10_LED_OU|
+43    |  I_O  |   0  |G4  |        |                 |       |            |
+44    |  I_O  |   0  |G2  |        |                 |       |            |
+45    | IN3   |   0  |    |        |                 |       |            |
+46    |GNDIO0 |   -  |    |        |                 |       |            |
+47    |VCCIO0 |   -  |    |        |                 |       |            |
+48    |  I_O  |   0  |H12 |        |                 |       |            |
+49    |  I_O  |   0  |H10 |        |                 |       |            |
+50    |  I_O  |   0  |H8  |        |                 |       |            |
+51    |  I_O  |   0  |H6  |        |                 |       |            |
+52    |  I_O  |   0  |H4  |    *   |LVCMOS18         | Output|clk_out     |
+53    |  I_O  |   0  |H2  |    *   |LVCMOS18         | Input |nRST        |
+54    |INCLK1 |   0  |    |        |                 |       |            |
+55    |GNDIO1 |   -  |    |        |                 |       |            |
+56    |INCLK2 |   1  |    |        |                 |       |            |
+57    | VCC   |   -  |    |        |                 |       |            |
+58    |  I_O  |   1  |I2  |        |                 |       |            |
+59    |  I_O  |   1  |I4  |        |                 |       |            |
+60    |  I_O  |   1  |I6  |        |                 |       |            |
+61    |  I_O  |   1  |I8  |        |                 |       |            |
+62    |  I_O  |   1  |I10 |        |                 |       |            |
+63    |  I_O  |   1  |I12 |        |                 |       |            |
+64    |VCCIO1 |   -  |    |        |                 |       |            |
+65    |GNDIO1 |   -  |    |        |                 |       |            |
+66    |  I_O  |   1  |J2  |        |                 |       |            |
+67    |  I_O  |   1  |J4  |        |                 |       |            |
+68    |  I_O  |   1  |J6  |        |                 |       |            |
+69    |  I_O  |   1  |J8  |        |                 |       |            |
+70    |  I_O  |   1  |J10 |    *   |LVCMOS18         | Output|diode       |
+71    |  I_O  |   1  |J12 |        |                 |       |            |
+72    | IN4   |   0  |    |        |                 |       |            |
+73    | GND   |   -  |    |        |                 |       |            |
+74    | TMS   |   -  |    |        |                 |       |            |
+75    |VCCIO1 |   -  |    |        |                 |       |            |
+76    |  I_O  |   1  |K12 |        |                 |       |            |
+77    |  I_O  |   1  |K10 |        |                 |       |            |
+78    |  I_O  |   1  |K8  |        |                 |       |            |
+79    |  I_O  |   1  |K6  |        |                 |       |            |
+80    |  I_O  |   1  |K4  |        |                 |       |            |
+81    |  I_O  |   1  |K2  |        |                 |       |            |
+82    |GNDIO1 |   -  |    |        |                 |       |            |
+83    |  I_O  |   1  |L14 |        |                 |       |            |
+84    |  I_O  |   1  |L12 |        |                 |       |            |
+85    |  I_O  |   1  |L10 |        |                 |       |            |
+86    |  I_O  |   1  |L8  |        |                 |       |            |
+87    |  I_O  |   1  |L6  |        |                 |       |            |
+88    |  I_O  |   1  |L4  |        |                 |       |            |
+89    | IN5   |   1  |    |        |                 |       |            |
+90    | NC    |   -  |    |        |                 |       |            |
+91    |VCCIO1 |   -  |    |        |                 |       |            |
+92    | IN6   |   1  |    |        |                 |       |            |
+93    |  I_O  |   1  |M2  |        |                 |       |            |
+94    |  I_O  |   1  |M4  |        |                 |       |            |
+95    |  I_O  |   1  |M6  |        |                 |       |            |
+96    |  I_O  |   1  |M8  |        |                 |       |            |
+97    |  I_O  |   1  |M10 |        |                 |       |            |
+98    |  I_O  |   1  |M12 |        |                 |       |            |
+99    |GNDIO1 |   -  |    |        |                 |       |            |
+100   |  I_O  |   1  |N2  |        |                 |       |            |
+101   |  I_O  |   1  |N4  |        |                 |       |            |
+102   |  I_O  |   1  |N6  |        |                 |       |            |
+103   |  I_O  |   1  |N8  |        |                 |       |            |
+104   |  I_O  |   1  |N10 |        |                 |       |            |
+105   |  I_O  |   1  |N12 |        |                 |       |            |
+106   |VCCIO1 |   -  |    |        |                 |       |            |
+107   | TDO   |   -  |    |        |                 |       |            |
+108   | VCC   |   -  |    |        |                 |       |            |
+109   | GND   |   -  |    |        |                 |       |            |
+110   | IN7   |   1  |    |        |                 |       |            |
+111   |  I_O  |   1  |O12 |        |                 |       |            |
+112   |  I_O  |   1  |O10 |        |                 |       |            |
+113   |  I_O  |   1  |O8  |        |                 |       |            |
+114   |  I_O  |   1  |O6  |        |                 |       |            |
+115   |  I_O  |   1  |O4  |        |                 |       |            |
+116   |  I_O  |   1  |O2  |        |                 |       |            |
+117   | IN8   |   1  |    |        |                 |       |            |
+118   |GNDIO1 |   -  |    |        |                 |       |            |
+119   |VCCIO1 |   -  |    |        |                 |       |            |
+120   |  I_O  |   1  |P12 |        |                 |       |            |
+121   |  I_O  |   1  |P10 |        |                 |       |            |
+122   |  I_O  |   1  |P8  |        |                 |       |            |
+123   |  I_O  |   1  |P6  |        |                 |       |            |
+124   |  I_O  |   1  |P4  |        |                 |       |            |
+125   | I_O/OE|   1  |P2  |        |                 |       |            |
+126   |INCLK3 |   1  |    |        |                 |       |            |
+127   |GNDIO0 |   -  |    |        |                 |       |            |
+128   |INCLK0 |   0  |    |        |                 |       |            |
+129   | VCC   |   -  |    |        |                 |       |            |
+130   | I_O/OE|   0  |A2  |        |                 |       |            |
+131   |  I_O  |   0  |A4  |        |                 |       |            |
+132   |  I_O  |   0  |A6  |        |                 |       |            |
+133   |  I_O  |   0  |A8  |        |                 |       |            |
+134   |  I_O  |   0  |A10 |        |                 |       |            |
+135   |  I_O  |   0  |A12 |        |                 |       |            |
+136   |VCCIO0 |   -  |    |        |                 |       |            |
+137   |GNDIO0 |   -  |    |        |                 |       |            |
+138   |  I_O  |   0  |B2  |        |                 |       |            |
+139   |  I_O  |   0  |B4  |        |                 |       |            |
+140   |  I_O  |   0  |B6  |        |                 |       |            |
+141   |  I_O  |   0  |B8  |        |                 |       |            |
+142   |  I_O  |   0  |B10 |        |                 |       |            |
+143   |  I_O  |   0  |B12 |        |                 |       |            |
+144   | IN9   |   0  |    |        |                 |       |            |
+------------------------------------------------------------------------------------
+
+<Note> GLB Pad : This notation refers to the GLB I/O pad number in the device.
+<Note> Assigned Pin : user or dedicated input assignment (E.g. Clock pins).
+<Note> Pin Type : 
+          ClkIn : Dedicated input or clock pin 
+           CLK  : Dedicated clock pin
+           I_O  : Input/Output pin
+           INP  : Dedicated input pin
+           JTAG : JTAG Control and test pin
+           NC   : No connected
+
+
+
+Input_Signal_List
+~~~~~~~~~~~~~~~~~
+                Input
+         Pin    Fanout
+ Pin GLB Type                       Pullup Signal
+--------------------------------------------------------
+  25   E  I/O   1  --------I-------    Down cup10_motor_D
+  26   E  I/O   1  --------I-------    Down cup10_motor_U
+   4   C  I/O   1  ------G---------    Down cup1_motor_D
+   5   C  I/O   1  ------G---------    Down cup1_motor_U
+   6   C  I/O   1  ---------J------    Down cup2_motor_D
+   7   C  I/O   1  ---------J------    Down cup2_motor_U
+   8   C  I/O   1  A---------------    Down cup3_motor_D
+   9   C  I/O   1  A---------------    Down cup3_motor_U
+  11   D  I/O   1  -------H--------    Down cup4_motor_D
+  12   D  I/O   1  -------H--------    Down cup4_motor_U
+  13   D  I/O   1  -----------L----    Down cup5_motor_D
+  14   D  I/O   1  -----------L----    Down cup5_motor_U
+  15   D  I/O   1  -----F----------    Down cup6_motor_D
+  16   D  I/O   1  -----F----------    Down cup6_motor_U
+  17  --  IN       ----------------    Down cup7_motor_D
+  20  --  IN       ----------------    Down cup7_motor_U
+  21   E  I/O   1  --C-------------    Down cup8_motor_D
+  22   E  I/O   1  --C-------------    Down cup8_motor_U
+  23   E  I/O   1  ---------------P    Down cup9_motor_D
+  24   E  I/O   1  ---------------P    Down cup9_motor_U
+  53   H  I/O   10 A-C--FGHIJ-L-N-P    Down nRST
+--------------------------------------------------------
+
+
+
+Output_Signal_List
+~~~~~~~~~~~~~~~~~~
+          I         C      P R P       O Output
+          N         L Mc   R E U C O F B Fanout
+ Pin GLB  P LL PTs  S Type E S P E E P P                     Slew Pullup Signal
+--------------------------------------------------------------------------------------
+  52   H  2  -   2  1 DFF      R         10 A-C--FGHIJ-L-N-P  Fast   Down clk_out
+  42   G  2  -   1  1 COM                   ----------------  Fast   Down cup10_LED_OUT
+  28   F  2  -   1  1 COM                   ----------------  Fast   Down cup1_LED_OUT
+  29   F  2  -   1  1 COM                   ----------------  Fast   Down cup2_LED_OUT
+  30   F  2  -   1  1 COM                   ----------------  Fast   Down cup3_LED_OUT
+  31   F  2  -   1  1 COM                   ----------------  Fast   Down cup4_LED_OUT
+  32   F  2  -   1  1 COM                   ----------------  Fast   Down cup5_LED_OUT
+  33   F  2  -   1  1 COM                   ----------------  Fast   Down cup6_LED_OUT
+  39   G  2  -   1  1 COM                   ----------------  Fast   Down cup7_LED_OUT
+  40   G  2  -   1  1 COM                   ----------------  Fast   Down cup8_LED_OUT
+  41   G  2  -   1  1 COM                   ----------------  Fast   Down cup9_LED_OUT
+  70   J  1  -   1  1 COM                   ----------------  Fast   Down diode
+--------------------------------------------------------------------------------------
+
+<Note> CLS = Number of clusters used
+       INP = Number of input signals
+       PTs = Number of product terms
+        LL = Number of logic levels
+       PRE = Has preset equation
+       RES = Has reset equation
+       PUP = Power-Up initial state: R=Reset, S=Set
+        CE = Has clock enable equation
+        OE = Has output enable equation
+        FP = Fast path used
+       OBP = ORP bypass used
+
+
+
+Bidir_Signal_List
+~~~~~~~~~~~~~~~~~
+          I         C      P R P       O Bidir
+          N         L Mc   R E U C O F B Fanout
+ Pin GLB  P LL PTs  S Type E S P E E P P                     Slew Pullup Signal
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+<Note> CLS = Number of clusters used
+       INP = Number of input signals
+       PTs = Number of product terms
+        LL = Number of logic levels
+       PRE = Has preset equation
+       RES = Has reset equation
+       PUP = Power-Up initial state: R=Reset, S=Set
+        CE = Has clock enable equation
+        OE = Has output enable equation
+        FP = Fast path used
+       OBP = ORP bypass used
+
+
+
+Buried_Signal_List
+~~~~~~~~~~~~~~~~~~
+        I         C      P R P       Node
+        N         L Mc   R E U C I F Fanout
+Mc GLB  P LL PTs  S Type E S P E R P                     Signal
+---------------------------------------------------------------------
+ 2   G  7  -   3  1 DFF      R       2  -----FG---------  Q0
+ 3   G  7  -   3  1 DFF      R       1  ------G---------  Q1
+ 3   H  7  -   3  1 DFF      R       1  -------H--------  Q10
+10   H  2  -   1  1 DFF      R       2  -----F-H--------  Q11
+ 2   L  7  -   3  1 DFF      R       2  -----F-----L----  Q12
+ 5   L  7  -   3  1 DFF      R       1  -----------L----  Q13
+10   L  2  -   1  1 DFF      R       2  -----F-----L----  Q14
+ 3   F  7  -   3  1 DFF      R       1  -----F----------  Q15
+ 5   F  7  -   3  1 DFF      R       1  -----F----------  Q16
+ 9   F  2  -   1  1 DFF      R       1  -----F----------  Q17
+ 3   N  7  -   3  1 DFF      R       2  ------G------N--  Q18
+ 9   N  7  -   3  1 DFF      R       1  -------------N--  Q19
+ 5   G  2  -   1  1 DFF      R       2  -----FG---------  Q2
+12   G  2  -   1  1 DFF      R       2  ------G------N--  Q20
+ 1   C  7  -   3  1 DFF      R       2  --C---G---------  Q21
+ 3   C  7  -   3  1 DFF      R       1  --C-------------  Q22
+ 6   C  2  -   1  1 DFF      R       2  --C---G---------  Q23
+ 2   P  7  -   3  1 DFF      R       2  ------G--------P  Q24
+ 5   P  7  -   3  1 DFF      R       1  ---------------P  Q25
+10   P  2  -   1  1 DFF      R       2  ------G--------P  Q26
+ 2   I  7  -   3  1 DFF      R       2  ------G-I-------  Q27
+ 5   I  7  -   3  1 DFF      R       1  --------I-------  Q28
+10   I  2  -   1  1 DFF      R       2  ------G-I-------  Q29
+ 2   J  7  -   3  1 DFF      R       2  -----F---J------  Q3
+ 5   J  7  -   3  1 DFF      R       1  ---------J------  Q4
+ 7   F  2  -   1  1 DFF      R       2  -----F---J------  Q5
+ 0   A  7  -   3  1 DFF      R       2  A----F----------  Q6
+ 1   A  7  -   3  1 DFF      R       1  A---------------  Q7
+12   A  2  -   1  1 DFF      R       2  A----F----------  Q8
+ 1   H  7  -   3  1 DFF      R       2  -----F-H--------  Q9
+15   F  0  -   0  1 COM              1  A---------------  _dup_osc_dis
+15   C  0  -   0  1 COM                 ----------------  osc_dis
+ 2   A  2  -   2  1 DFF      R       1  A---------------  timdiv1
+ 5   B  2  -   2  1 DFF      R       1  -B--------------  timdiv10
+ 7   B  2  -   2  1 DFF      R       1  -B--------------  timdiv11
+ 9   B  2  -   2  1 DFF      R       2  -B-----H--------  timdiv12
+ 3   A  2  -   2  1 DFF      R       1  A---------------  timdiv2
+ 5   A  2  -   2  1 DFF      R       1  A---------------  timdiv3
+ 7   A  2  -   2  1 DFF      R       1  A---------------  timdiv4
+ 9   A  2  -   2  1 DFF      R       2  AB--------------  timdiv5
+12   B  2  -   1  1 DFF      R       1  -B--------------  timdiv6
+ 0   B  2  -   2  1 DFF      R       1  -B--------------  timdiv7
+ 1   B  2  -   2  1 DFF      R       1  -B--------------  timdiv8
+ 3   B  2  -   2  1 DFF      R       1  -B--------------  timdiv9
+15   F  0  -   0  0 COM              1  A---------------  tmr_out
+---------------------------------------------------------------------
+
+<Note> CLS = Number of clusters used
+       INP = Number of input signals
+       PTs = Number of product terms
+        LL = Number of logic levels
+       PRE = Has preset equation
+       RES = Has reset equation
+       PUP = Power-Up initial state: R=Reset, S=Set
+        CE = Has clock enable equation
+        OE = Has output enable equation
+        IR = Input register
+        FP = Fast path used
+       OBP = ORP bypass used
+
+
+
+PostFit_Equations
+~~~~~~~~~~~~~~~~~
+
+Q0.D = !nRST & !Q0.Q & Q1.Q & !Q2.Q
+    # !nRST & cup1_motor_D & !Q1.Q & !Q2.Q
+    # !nRST & !cup1_motor_U & Q1.Q & !Q2.Q ; (3 pterms, 6 signals)
+Q0.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q1.D = !nRST & cup1_motor_D & !Q0.Q & Q1.Q & !Q2.Q
+    # !nRST & Q0.Q & !Q1.Q & !Q2.Q
+    # !nRST & !cup1_motor_U & Q0.Q & !Q2.Q ; (3 pterms, 6 signals)
+Q1.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q10.D = !nRST & cup4_motor_D & !Q9.Q & Q10.Q & !Q11.Q
+    # !nRST & Q9.Q & !Q10.Q & !Q11.Q
+    # !nRST & !cup4_motor_U & Q9.Q & !Q11.Q ; (3 pterms, 6 signals)
+Q10.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q11.D = Q11.Q ; (1 pterm, 1 signal)
+Q11.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q12.D = !nRST & !Q12.Q & Q13.Q & !Q14.Q
+    # !nRST & cup5_motor_D & !Q13.Q & !Q14.Q
+    # !nRST & !cup5_motor_U & Q13.Q & !Q14.Q ; (3 pterms, 6 signals)
+Q12.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q13.D = !nRST & cup5_motor_D & !Q12.Q & Q13.Q & !Q14.Q
+    # !nRST & Q12.Q & !Q13.Q & !Q14.Q
+    # !nRST & !cup5_motor_U & Q12.Q & !Q14.Q ; (3 pterms, 6 signals)
+Q13.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q14.D = Q14.Q ; (1 pterm, 1 signal)
+Q14.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q15.D = !nRST & !Q15.Q & Q16.Q & !Q17.Q
+    # !nRST & cup6_motor_D & !Q16.Q & !Q17.Q
+    # !nRST & !cup6_motor_U & Q16.Q & !Q17.Q ; (3 pterms, 6 signals)
+Q15.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q16.D = !nRST & cup6_motor_D & !Q15.Q & Q16.Q & !Q17.Q
+    # !nRST & Q15.Q & !Q16.Q & !Q17.Q
+    # !nRST & !cup6_motor_U & Q15.Q & !Q17.Q ; (3 pterms, 6 signals)
+Q16.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q17.D = Q17.Q ; (1 pterm, 1 signal)
+Q17.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q18.D = !nRST & !Q18.Q & Q19.Q & !Q20.Q
+    # !nRST & cup7_motor_D & !Q19.Q & !Q20.Q
+    # !nRST & !cup7_motor_U & Q19.Q & !Q20.Q ; (3 pterms, 6 signals)
+Q18.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q19.D = !nRST & cup7_motor_D & !Q18.Q & Q19.Q & !Q20.Q
+    # !nRST & Q18.Q & !Q19.Q & !Q20.Q
+    # !nRST & !cup7_motor_U & Q18.Q & !Q20.Q ; (3 pterms, 6 signals)
+Q19.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q2.D = Q2.Q ; (1 pterm, 1 signal)
+Q2.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q20.D = Q20.Q ; (1 pterm, 1 signal)
+Q20.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q21.D = !nRST & !Q21.Q & Q22.Q & !Q23.Q
+    # !nRST & cup8_motor_D & !Q22.Q & !Q23.Q
+    # !nRST & !cup8_motor_U & Q22.Q & !Q23.Q ; (3 pterms, 6 signals)
+Q21.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q22.D = !nRST & cup8_motor_D & !Q21.Q & Q22.Q & !Q23.Q
+    # !nRST & Q21.Q & !Q22.Q & !Q23.Q
+    # !nRST & !cup8_motor_U & Q21.Q & !Q23.Q ; (3 pterms, 6 signals)
+Q22.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q23.D = Q23.Q ; (1 pterm, 1 signal)
+Q23.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q24.D = !nRST & !Q24.Q & Q25.Q & !Q26.Q
+    # !nRST & cup9_motor_D & !Q25.Q & !Q26.Q
+    # !nRST & !cup9_motor_U & Q25.Q & !Q26.Q ; (3 pterms, 6 signals)
+Q24.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q25.D = !nRST & cup9_motor_D & !Q24.Q & Q25.Q & !Q26.Q
+    # !nRST & Q24.Q & !Q25.Q & !Q26.Q
+    # !nRST & !cup9_motor_U & Q24.Q & !Q26.Q ; (3 pterms, 6 signals)
+Q25.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q26.D = Q26.Q ; (1 pterm, 1 signal)
+Q26.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q27.D = !nRST & !Q27.Q & Q28.Q & !Q29.Q
+    # !nRST & cup10_motor_D & !Q28.Q & !Q29.Q
+    # !nRST & !cup10_motor_U & Q28.Q & !Q29.Q ; (3 pterms, 6 signals)
+Q27.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q28.D = !nRST & cup10_motor_D & !Q27.Q & Q28.Q & !Q29.Q
+    # !nRST & Q27.Q & !Q28.Q & !Q29.Q
+    # !nRST & !cup10_motor_U & Q27.Q & !Q29.Q ; (3 pterms, 6 signals)
+Q28.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q29.D = Q29.Q ; (1 pterm, 1 signal)
+Q29.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q3.D = !nRST & !Q3.Q & Q4.Q & !Q5.Q
+    # !nRST & cup2_motor_D & !Q4.Q & !Q5.Q
+    # !nRST & !cup2_motor_U & Q4.Q & !Q5.Q ; (3 pterms, 6 signals)
+Q3.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q4.D = !nRST & cup2_motor_D & !Q3.Q & Q4.Q & !Q5.Q
+    # !nRST & Q3.Q & !Q4.Q & !Q5.Q
+    # !nRST & !cup2_motor_U & Q3.Q & !Q5.Q ; (3 pterms, 6 signals)
+Q4.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q5.D = Q5.Q ; (1 pterm, 1 signal)
+Q5.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q6.D = !nRST & !Q6.Q & Q7.Q & !Q8.Q
+    # !nRST & cup3_motor_D & !Q7.Q & !Q8.Q
+    # !nRST & !cup3_motor_U & Q7.Q & !Q8.Q ; (3 pterms, 6 signals)
+Q6.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q7.D = !nRST & cup3_motor_D & !Q6.Q & Q7.Q & !Q8.Q
+    # !nRST & Q6.Q & !Q7.Q & !Q8.Q
+    # !nRST & !cup3_motor_U & Q6.Q & !Q8.Q ; (3 pterms, 6 signals)
+Q7.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q8.D = Q8.Q ; (1 pterm, 1 signal)
+Q8.C = clk_out.Q ; (1 pterm, 1 signal)
+
+Q9.D = !nRST & !Q9.Q & Q10.Q & !Q11.Q
+    # !nRST & cup4_motor_D & !Q10.Q & !Q11.Q
+    # !nRST & !cup4_motor_U & Q10.Q & !Q11.Q ; (3 pterms, 6 signals)
+Q9.C = clk_out.Q ; (1 pterm, 1 signal)
+
+_dup_osc_dis = 0 ; (0 pterm, 0 signal)
+
+clk_out.D = !clk_out.Q ; (1 pterm, 1 signal)
+clk_out.C = timdiv12.Q ; (1 pterm, 1 signal)
+
+cup10_LED_OUT = !Q27.Q & !Q29.Q ; (1 pterm, 2 signals)
+
+cup1_LED_OUT = !Q0.Q & !Q2.Q ; (1 pterm, 2 signals)
+
+cup2_LED_OUT = !Q3.Q & !Q5.Q ; (1 pterm, 2 signals)
+
+cup3_LED_OUT = !Q6.Q & !Q8.Q ; (1 pterm, 2 signals)
+
+cup4_LED_OUT = !Q9.Q & !Q11.Q ; (1 pterm, 2 signals)
+
+cup5_LED_OUT = !Q12.Q & !Q14.Q ; (1 pterm, 2 signals)
+
+cup6_LED_OUT = !Q15.Q & !Q17.Q ; (1 pterm, 2 signals)
+
+cup7_LED_OUT = !Q18.Q & !Q20.Q ; (1 pterm, 2 signals)
+
+cup8_LED_OUT = !Q21.Q & !Q23.Q ; (1 pterm, 2 signals)
+
+cup9_LED_OUT = !Q24.Q & !Q26.Q ; (1 pterm, 2 signals)
+
+diode = clk_out.Q ; (1 pterm, 1 signal)
+
+osc_dis = 0 ; (0 pterm, 0 signal)
+
+timdiv1.D = !timdiv1.Q ; (1 pterm, 1 signal)
+timdiv1.C = tmr_out ; (1 pterm, 1 signal)
+
+timdiv10.D = !timdiv10.Q ; (1 pterm, 1 signal)
+timdiv10.C = timdiv9.Q ; (1 pterm, 1 signal)
+
+timdiv11.D = !timdiv11.Q ; (1 pterm, 1 signal)
+timdiv11.C = timdiv10.Q ; (1 pterm, 1 signal)
+
+timdiv12.D = !timdiv12.Q ; (1 pterm, 1 signal)
+timdiv12.C = timdiv11.Q ; (1 pterm, 1 signal)
+
+timdiv2.D = !timdiv2.Q ; (1 pterm, 1 signal)
+timdiv2.C = timdiv1.Q ; (1 pterm, 1 signal)
+
+timdiv3.D = !timdiv3.Q ; (1 pterm, 1 signal)
+timdiv3.C = timdiv2.Q ; (1 pterm, 1 signal)
+
+timdiv4.D = !timdiv4.Q ; (1 pterm, 1 signal)
+timdiv4.C = timdiv3.Q ; (1 pterm, 1 signal)
+
+timdiv5.D = !timdiv5.Q ; (1 pterm, 1 signal)
+timdiv5.C = timdiv4.Q ; (1 pterm, 1 signal)
+
+timdiv6.D = !timdiv6.Q ; (1 pterm, 1 signal)
+timdiv6.C = timdiv5.Q ; (1 pterm, 1 signal)
+
+timdiv7.D = !timdiv7.Q ; (1 pterm, 1 signal)
+timdiv7.C = timdiv6.Q ; (1 pterm, 1 signal)
+
+timdiv8.D = !timdiv8.Q ; (1 pterm, 1 signal)
+timdiv8.C = timdiv7.Q ; (1 pterm, 1 signal)
+
+timdiv9.D = !timdiv9.Q ; (1 pterm, 1 signal)
+timdiv9.C = timdiv8.Q ; (1 pterm, 1 signal)
+
+
+
+

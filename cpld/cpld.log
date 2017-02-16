@@ -1,0 +1,3 @@
+<Warning>  P38473:  Illegal OSCTIMER divider value '2000000' is ignored. Default setting is applied.
+<Warning>  P38466:  DYNOSCDIS and TIMERRES have the same logic.
+Project 'cpld' was Fitted Successfully!
