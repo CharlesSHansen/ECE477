@@ -10,11 +10,12 @@ import numpy
 from neopixel import *
 from PIL import Image
 from math import *
-
+import sys
+import socket
 
 # LED strip configuration:
 WIDTH 		   = 30
-HEIGHT		   = 15
+HEIGHT		   = 17
 LED_COUNT      = 450   # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
@@ -154,7 +155,7 @@ def initStarts():
     
 def setScoreDisplay(strip,disp,mask,r,g,b):
     for i in range(20):
-        strip.setPixelColor(disp[i],Color(mask[i]*g,mask[i]*b,mask[i]*r))
+        strip.setPixelColor(disp[i],Color(mask[i]*g,mask[i]*r,mask[i]*b))
         strip.show()
 
 
@@ -193,30 +194,30 @@ def outputScore(strip, redScore, blueScore, clear):
 
     #set blue score
     if (blueScore == 10):
-        setScoreDisplay(strip,blue1,one,255,0,0)
-        setScoreDisplay(strip,blue2,zero,255,0,0)
+        setScoreDisplay(strip,blue1,one,0,0,255)
+        setScoreDisplay(strip,blue2,zero,0,0,355)
     else:
-        setScoreDisplay(strip,blue1,eight,0,0,0)
+        setScoreDisplay(strip,blue2,eight,0,0,0)
         if (blueScore == 9):
-            setScoreDisplay(strip,blue2,nine,255,0,255)
+            setScoreDisplay(strip,blue1,nine,0,0,255)
         elif (blueScore == 8):
-            setScoreDisplay(strip,blue2,eight,255,0,0)
+            setScoreDisplay(strip,blue1,eight,0,0,255)
         elif (blueScore == 7):
-            setScoreDisplay(strip,blue2,seven,255,0,0)
+            setScoreDisplay(strip,blue1,seven,0,0,255)
         elif (blueScore == 6):
-            setScoreDisplay(strip,blue2,six,255,0,0)
+            setScoreDisplay(strip,blue1,six,0,0,255)
         elif (blueScore == 5):
-            setScoreDisplay(strip,blue2,five,255,0,0)
+            setScoreDisplay(strip,blue1,five,0,0,255)
         elif (blueScore == 4):
-            setScoreDisplay(strip,blue2,four,255,0,0)
+            setScoreDisplay(strip,blue1,four,0,0,255)
         elif (blueScore == 3):
-            setScoreDisplay(strip,blue2,three,255,0,0)
+            setScoreDisplay(strip,blue1,three,0,0,255)
         elif (blueScore == 2):
-            setScoreDisplay(strip,blue2,two,255,0,0)
+            setScoreDisplay(strip,blue1,two,0,0,255)
         elif (blueScore == 1):
-            setScoreDisplay(strip,blue2,one,255,0,0)
+            setScoreDisplay(strip,blue1,one,0,0,255)
         else:
-            setScoreDisplay(strip,blue2,zero,255,0,0)
+            setScoreDisplay(strip,blue1,zero,0,0,255)
 
 
     strip.show()
@@ -258,16 +259,16 @@ def outputScore(strip, redScore, blueScore, clear):
 
 def setBorder(strip):
     for i in range(WIDTH):
-        strip.setPixelColor(i,Color(255,255,255))
-        strip.setPixelColor(i+30,Color(255,255,255))
+        strip.setPixelColor(i,Color(255,0,0))
+        strip.setPixelColor(i+30,Color(255,0,0))
     for i in range(WIDTH * HEIGHT - 30, WIDTH * HEIGHT - 1):
-        strip.setPixelColor(i,Color(255,255,255))
-        strip.setPixelColor(i-30,Color(255,255,255))
+        strip.setPixelColor(i,Color(255,0,0))
+        strip.setPixelColor(i-30,Color(255,0,0))
     for i in range(HEIGHT):
-        strip.setPixelColor(i*30 + 29,Color(255,255,255))
-        strip.setPixelColor(i*30, Color(255,255,255))
-        strip.setPixelColor(i*30 + 14, Color(255,255,255))
-        strip.setPixelColor(i*30 + 15, Color(255,255,255))
+        strip.setPixelColor(i*30 + 29,Color(255,0,0))
+        strip.setPixelColor(i*30, Color(255,0,0))
+        strip.setPixelColor(i*30 + 14, Color(255,0,0))
+        strip.setPixelColor(i*30 + 15, Color(255,0,0))
 
 def clearStrip(strip):
     for i in range(0, strip.numPixels()):
@@ -278,13 +279,17 @@ def clearStrip(strip):
 
 
 def main():
+    #Socket
+    #sd = socket.socket(socket.AF_UNIX)
+    #sd.bind('/home/pi/game')
+    
     #Vars
     matrix = numpy.zeros((30,15))
     scoreMode = True
     redScore = 10
     blueScore = 10
     initStarts()
-
+    
 
     print(red1)
     print("")
@@ -307,20 +312,46 @@ def main():
 
     #***** UART ***************
 
+    clearStrip(strip)
+    setBorder(strip)
+    strip.show()
 
 
     #******* BUTTONS ***********
 
     h = 1
+    #sd.listen(5)
+    #(client, addr) = sd.accept()
+    #sd.settimeout(.01)
+
     while (h == 1):
-        h = 0
+    
         #How to get this to run smooth while still listening for input from micro?
+        time.sleep(3)
 
         if (scoreMode):
-            outputScore(strip,redScore,blueScore, True)
+            outputScore(strip,redScore,blueScore, False)
+        redScore = redScore - 1
+        blueScore = blueScore - 1
+        if (redScore < 0):
+            h = 0
+            '''sd.listen(5)
+            try:
+                print("Listen")
+                value = client.recv(1024)
+                if(value == 'r'):
+                    redScore -= 1
+                    print('Red: ', redScore)
+                elif(value == 'b'):
+                    blueScore -= 1
+                    print('Blue: ', blueScore)
+            except:
+                pass
+            
         else:
             #print designs
             theaterChaseRainbow(strip)
+            '''
     '''
     # Color wipe animations.
     colorWipe(strip, Color(255, 0, 0))  # Green wipe
