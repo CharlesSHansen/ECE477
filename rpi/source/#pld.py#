@@ -1,0 +1,21 @@
+#PLD Pins from RPI (nRST and CLK)
+
+
+import time
+import RPi.GPIO as GPIO
+from pins import Pins
+
+class PLD:
+    def __init__(self):
+        self.pins   = Pins()
+        self.clk    = GPIO.output(5, 0)
+        self.pins.pin5 = self.clk()
+        self.nrst   = self.pins.pin3
+
+   ''' def setclock(self):
+        self.pins.pin5 = GPIO.output(5, 1)
+        time.sleep(1)
+        self.pins.pin5 = GPIO.output(5, 0)
+        time.sleep(1)
+        return'''
+
