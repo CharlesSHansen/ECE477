@@ -10,6 +10,7 @@
 #include "stdlib.h"
 #include "time.h"
 #include "msp_compatibility.h"
+#include "driverlib.h"
 //#include "msp.h"
 #define THRESHHOLD              3000
 #define MOTOR_TIME              10
@@ -28,6 +29,7 @@ uint64_t getStatus();
 void setPWM(int);
 void updateMotors();
 void pulseMotorDown(int);
+void scoreDetect();
 
 
 volatile uint16_t CupPrevious[10];
@@ -45,18 +47,18 @@ volatile int motorOff = 0;
 volatile int uartFlag = 0;
 volatile int uartChar = 0;
 
-volatile uint8_t[SIZE_321Up]            _321Up = [0,1,2,3,4,5];
-volatile uint8_t[10 - SIZE_321Up]       _321Down = [6,7,8,9];
-volatile uint8_t[SIZE_DiamondUp]        _DiamondUp = [0,1,2,4];
-volatile uint8_t[10 - SIZE_DiamondUp]   _DiamondDown = [3,5,6,7,8,9];
-volatile uint8_t[SIZE_BoxUp]            _BoxUp = [1,2,4,7,8];
-volatile uint8_t[10 - SIZE_BoxUp]       _BoxDown = [0,3,5,6,9];
-volatile uint8_t[SIZE_GentleUp]         _GentleUp = [4,8];
-volatile uint8_t[10 - SIZE_GentleUp]    _GentleDown = [0,1,2,3,5,6,7,9];
-volatile uint8_t[SIZE_LineUp]           _LineUp = [1,4,8];
-volatile uint8_t[10 - SIZE_LineUp]      _LineDown = [0,2,3,5,6,7,9];
-volatile uint8_t[SIZE_TriUp]            _TriUp = [4,7,8];
-volatile uint8_t[10 - SIZE_TriUp]       _TriDown = [0,1,2,3,5,6,9];
+volatile uint8_t            _321Up[SIZE_321Up] = {0,1,2,3,4,5};
+volatile uint8_t       _321Down[10 - SIZE_321Up] = {6,7,8,9};
+volatile uint8_t        _DiamondUp[SIZE_DiamondUp] = {0,1,2,4};
+volatile uint8_t   _DiamondDown[10 - SIZE_DiamondUp] = {3,5,6,7,8,9};
+volatile uint8_t            _BoxUp[SIZE_BoxUp] = {1,2,4,7,8};
+volatile uint8_t       _BoxDown[10 - SIZE_BoxUp] = {0,3,5,6,9};
+volatile uint8_t         _GentleUp[SIZE_GentleUp] = {4,8};
+volatile uint8_t    _GentleDown[10 - SIZE_GentleUp] = {0,1,2,3,5,6,7,9};
+volatile uint8_t           _LineUp[SIZE_LineUp] = {1,4,8};
+volatile uint8_t      _LineDown[10 - SIZE_LineUp] = {0,2,3,5,6,7,9};
+volatile uint8_t            _TriUp[SIZE_TriUp] = {4,7,8};
+volatile uint8_t       _TriDown[10 - SIZE_TriUp] = {0,1,2,3,5,6,9};
 
 enum Directon {
     up,
@@ -88,20 +90,23 @@ void main()
     // ******* GPIO *****************
     // ******************************
 
-    P1->DIR |= BIT0 | BIT6 | BIT7;
-    P1->OUT &= BIT0;
+   // P1->DIR |= BIT0 | BIT6 | BIT7;
+   // P1->OUT &= BIT0;
 
-    P2->DIR |= BIT4 | BIT6;
-    P2->OUT = 0;
+   // P2->DIR |= BIT4 | BIT6;
+   // P2->OUT = 0;
 
+   // P10->DIR |= BIT5;
+   // P10->OUT &= BIT5;
     P10->DIR |= BIT5;
-    P10->OUT &= BIT5;
+    P10->OUT &= ~BIT5;                       // Clear LED to start
 
 
 
 
-    P1->OUT &= ~BIT0;                       // Clear LED to start
-    P1->DIR |= BIT0;                        // Set P1.0/LED to output
+
+   // P1->OUT &= ~BIT0;                       // Clear LED to start
+   // P1->DIR |= BIT0;                        // Set P1.0/LED to output
 
 
     // ***************************************
@@ -128,34 +133,29 @@ void main()
     //********* MOTOR OUTPUT CONFIG ****************************************
     //**********************************************************************
 
-    P5->DIR |= (BIT1 | BIT2 | BIT3 | BIT4 | BIT5);
-    P4->DIR |= (BIT0 | BIT1);
-    P6->DIR |= (BIT0 | BIT1);
-    P9->DIR |= BIT1;
+    P7->DIR |= (BIT4 | BIT5 | BIT6 | BIT7);
+    P8->DIR |= (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
+    P3->DIR |= (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7);
+    P9->DIR |= BIT0;
 
-    P5->OUT &= ~(BIT1 | BIT2 | BIT3 | BIT4 | BIT5);
-    P4->OUT &= ~(BIT0 | BIT1);
-    P6->OUT &= ~(BIT0 | BIT1);
-    P9->OUT &= ~(BIT1);
+    P7->OUT &= ~(BIT4 | BIT5 | BIT6 | BIT7);
+    P8->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
+    P3->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7);
+    P9->OUT &= ~BIT0;
 
     //********* UART CONFIG ************************************************
     //**********************************************************************
 
 
 
-    MAP_GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P3,
-    GPIO_PIN2 | GPIO_PIN3, GPIO_PRIMARY_MODULE_FUNCTION);
+    MAP_GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P3,GPIO_PIN2 | GPIO_PIN3, GPIO_PRIMARY_MODULE_FUNCTION);
 
-    /* Setting DCO to 12MHz */
     MAP_CS_setDCOCenteredFrequency(CS_DCO_FREQUENCY_12);
 
-    /* Configuring UART Module */
     MAP_UART_initModule(EUSCI_A2_BASE, &uartConfig);
 
-    /* Enable UART module */
     MAP_UART_enableModule(EUSCI_A2_BASE);
 
-    /* Enabling interrupts */
     MAP_UART_enableInterrupt(EUSCI_A2_BASE, EUSCI_A_UART_RECEIVE_INTERRUPT);
     MAP_Interrupt_enableInterrupt(INT_EUSCIA2);
     //MAP_Interrupt_enableSleepOnIsrExit();
@@ -246,19 +246,26 @@ void main()
         //***** IR SENSOR HANDLE *****************
         //****************************************
         if (readFlag == 1) { //NEW VALUE READ FROM ADC
+            //printf("%d\n",CupCurrent[i]);
             readFlag = 0;
             //printDiffs();
 
             for(i = 0; i< 1; i++){
+                printCurrents();
                 diff = abs(CupCurrent[i] - CupPrevious[i]);
-                if ((diff > THRESHHOLD) & CupPosition[i] == 1){
+                if ((diff > THRESHHOLD)){// & CupPosition[i] == 1){
                     if(BallIn[i] == 0) {
-                        // BALL ENTERING CUP - FLASH LIGHTS
+                        printf("ball entered\n");
+                        // BALL ENTERING CUP - FLASH LIGHTS AND SEND SCORE TO MICRO
+                        //P10->OUT ^= BIT5;
                         BallIn[i] = 1;
-                        pulseMotorDown(i);
+                        //pulseMotorDown(i);
+                        //scoreDetect();
                     }
                     else{
+                        printf("ball left\n");
                         // BALL LEAVING CUP - MOVE MOTOR DOWN
+                       // P10->OUT ^= BIT5;
                         CupPosition[i] = 0;
                         BallIn[i] = 0;
                         motorDown[i] = 1;
@@ -271,7 +278,8 @@ void main()
 
         //**** CHECK FOR RE-RACK FROM UART ************
         //*********************************************
-        if (uartFlag == 1) {
+      /*  if (uartFlag == 1) {
+            printf("Got UART\n");
             uartFlag = 0;
             switch(uartChar) {
             case 48: // 0 - 3-2-1
@@ -298,23 +306,71 @@ void main()
                     }
                 }
                 for (i = 0; i < (10 - SIZE_DiamondUp); i++) {
-                    if (CupPosition[_321Down[i]] == 0) {
-                        motorUp[_321Down[i]] = 1;
-                        CupPosition[_321Down[i]] = 1;
+                    if (CupPosition[_DiamondDown[i]] == 0) {
+                        motorUp[_DiamondDown[i]] = 1;
+                        CupPosition[_DiamondDown[i]] = 1;
                     }
                 }
                 break;
             case 50: // 2 - Box
                 // 1,2,4,7,8
+                for (i = 0; i < SIZE_BoxUp; i++)  {
+                    if (CupPosition[_BoxUp[i]] == 1) {
+                        motorDown[_BoxUp[i]] = 1;
+                        CupPosition[_BoxUp[i]] = 0;
+                    }
+                }
+                for (i = 0; i < (10 - SIZE_BoxUp); i++) {
+                    if (CupPosition[_BoxDown[i]] == 0) {
+                        motorUp[_BoxDown[i]] = 1;
+                        CupPosition[_BoxDown[i]] = 1;
+                    }
+                }
                 break;
             case 51: // 3 - Gentlemen's
                 // 4, 8
+                for (i = 0; i < SIZE_GentleUp; i++)  {
+                    if (CupPosition[_GentleUp[i]] == 1) {
+                        motorDown[_GentleUp[i]] = 1;
+                        CupPosition[_GentleUp[i]] = 0;
+                    }
+                }
+                for (i = 0; i < (10 - SIZE_GentleUp); i++) {
+                    if (CupPosition[_GentleDown[i]] == 0) {
+                        motorUp[_GentleDown[i]] = 1;
+                        CupPosition[_GentleDown[i]] = 1;
+                    }
+                }
                 break;
             case 52: // 4 - Line
                 // 1,4,8
+                for (i = 0; i < SIZE_LineUp; i++)  {
+                    if (CupPosition[_LineUp[i]] == 1) {
+                        motorDown[_LineUp[i]] = 1;
+                        CupPosition[_LineUp[i]] = 0;
+                    }
+                }
+                for (i = 0; i < (10 - SIZE_LineUp); i++) {
+                    if (CupPosition[_LineDown[i]] == 0) {
+                        motorUp[_LineDown[i]] = 1;
+                        CupPosition[_LineDown[i]] = 1;
+                    }
+                }
                 break;
             case 53: // Triangle
                 // 4,7,8
+                for (i = 0; i < SIZE_TriUp; i++)  {
+                    if (CupPosition[_TriUp[i]] == 1) {
+                        motorDown[_TriUp[i]] = 1;
+                        CupPosition[_TriUp[i]] = 0;
+                    }
+                }
+                for (i = 0; i < (10 - SIZE_TriUp); i++) {
+                    if (CupPosition[_TriDown[i]] == 0) {
+                        motorUp[_TriDown[i]] = 1;
+                        CupPosition[_TriDown[i]] = 1;
+                    }
+                }
                 break;
             default :
                 break;
@@ -322,13 +378,16 @@ void main()
 
 
             }
-        }
+        }*/
 
-
+        //printf("start motors\n");
         //**** CHECK FOR ANY MOTOR MOVEMENT SET *******
         //*********************************************
+
         P7->OUT |= BIT4 & (motorDown[0] << 4);      //Motor1 Down
         P7->OUT |= BIT5 & (motorUp[0] << 5);        //Motor1 Up
+        if (motorDown[0] == 1)
+            printf("%x\n",BIT4 & (motorDown[0] << 4));
         P7->OUT |= BIT6 & (motorDown[1] << 6);      //Motor2 Down
         P7->OUT |= BIT7 & (motorUp[1] << 7);        //Motor2 Up
         P8->OUT |= BIT0 & (motorDown[2]);           //Motor3 Down
@@ -348,6 +407,7 @@ void main()
         P8->OUT |= BIT7 & (motorDown[9] << 2);      //Motor10 Down
         P9->OUT |= BIT0 & (motorUp[9]);             //Motor10 Up
 
+
         // If any movement, start timer
         for (i = 0; i < 10; i++) {
             if (motorDown[i] == 1 || motorUp[i] == 1) {
@@ -355,16 +415,18 @@ void main()
                 break;
             }
         }
+        //printf("checked for motor timer start\n");
 
 
         //**** MOTOR TIMER DONE - TURN MOTOR OFF*******
         //*********************************************
         if (motorOff == 1) {
+            printf("motor timer done\n");
             // TURN ALL MOTORS OFF AT ONCE
-            P5->OUT &= ~(BIT1 | BIT2 | BIT3 | BIT4 | BIT5);
-            P4->OUT &= ~(BIT0 | BIT1);
-            P6->OUT &= ~(BIT0 | BIT1);
-            P9->OUT &= ~(BIT1);
+            P7->OUT &= ~(BIT4 | BIT5 | BIT6 | BIT7);
+            P8->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
+            P3->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7);
+            P9->OUT &= ~BIT0;
             motorOff = 0;
             for (i = 0; i < 10; i++) {
                 motorDown[i] = 0;
