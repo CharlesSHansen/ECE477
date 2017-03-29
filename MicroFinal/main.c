@@ -125,11 +125,6 @@ void main()
     NVIC->ISER[0] = 1 << ((TA1_0_IRQn) & 31);
 
 
-    TIMER_A0->CCTL[0] = TIMER_A_CCTLN_CCIE; // TACCR0 interrupt enabled
-        TIMER_A0->CCR[0] = 20000;
-        TIMER_A0->CTL = TIMER_A_CTL_SSEL__SMCLK | TIMER_A_CTL_MC__UP | TIMER_A_CTL_ID__8;
-        NVIC->ISER[0] = 1 << ((TA0_0_IRQn) & 31);
-
     //********* MOTOR OUTPUT CONFIG ****************************************
     //**********************************************************************
 
@@ -259,7 +254,7 @@ void main()
                         // BALL ENTERING CUP - FLASH LIGHTS AND SEND SCORE TO MICRO
                         //P10->OUT ^= BIT5;
                         BallIn[i] = 1;
-                        //pulseMotorDown(i);
+                        pulseMotorDown(i);
                         //scoreDetect();
                     }
                     else{
@@ -441,7 +436,11 @@ void main()
 }
 
 void pulseMotorDown(int a) {
-
+    int i;
+    P7->OUT |= BIT4;
+    for (i = 0; i < 1000; i++)
+        { }
+    P7->OUT &= ~BIT4;
 }
 
 void printDiffs() {
@@ -454,14 +453,6 @@ void printDiffs() {
 }
 
 
-
-
-
-void TA0_0_IRQHandler(void) {
-    TIMER_A0->CCTL[0] &= ~TIMER_A_CCTLN_CCIFG;
-    //P2->OUT ^= BIT6;
-    TIMER_A0->CCR[0] += 1;
-}
 
 
 
