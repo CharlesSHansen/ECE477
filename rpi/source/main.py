@@ -1,28 +1,21 @@
-# NeoPixel library strandtest example
-# Author: Tony DiCola (tony@tonydicola.com)
-#
-# Direct port of the Arduino NeoPixel library strandtest example.  Showcases
-# various animations on a strip of NeoPixels.
 import time
 import random
 import numpy
-#from enum import Enum
 from neopixel import *
 from PIL import Image
 from math import *
 import sys
-import socket
 
 # LED strip configuration:
 WIDTH 		   = 30
-HEIGHT		   = 17
-LED_COUNT      = 450   # Number of LED pixels.
+HEIGHT		   = 16
+LED_COUNT      = WIDTH * HEIGHT   # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
-LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
+LED_FREQ_HZ    = 700000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
 LED_BRIGHTNESS = 255   # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
-
+PATTERN_COUNT = 10
 
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=50):
@@ -82,6 +75,29 @@ def theaterChaseRainbow(strip, wait_ms=50):
                 for i in range(0, strip.numPixels(), 3):
                     strip.setPixelColor(i+q, 0)
 
+def transform(arr):
+    invert = True
+    ret = []
+    offset = WIDTH
+
+    for i in range(0, len(arr)):
+        if(i % WIDTH == 0):
+            invert = not invert;
+        if((not invert)):
+            ret.append(arr[i])
+        else:
+            #print(i + offset)
+            ret.append(arr[int(i + offset -1)])
+            offset = offset - 2
+        if(offset == -30):
+            offset = WIDTH
+            '''
+    for i in range(0, len(ret)):
+        if(i % 30 == 0):
+            print("")
+            print ret[i],
+            '''
+    return(ret)
 
 red1 = []
 red2 = []
@@ -125,6 +141,7 @@ def initStarts():
             for j in range(4):
                 if (row % 2 == 0):
                     red1.append(col1[row] + 3 + j)
+
                     red2.append(col1[row] + 8 + j)
                     blue1.append(col1[row] + 18 + j)
                     blue2.append(col1[row] + 23 + j)
@@ -152,7 +169,7 @@ def initStarts():
                 blue1.append(col1[row] - 21)
                 blue2.append(col1[row] - 23)
                 blue2.append(col1[row] - 26)
-    
+                
 def setScoreDisplay(strip,disp,mask,r,g,b):
     for i in range(20):
         strip.setPixelColor(disp[i],Color(mask[i]*g,mask[i]*r,mask[i]*b))
@@ -274,23 +291,146 @@ def clearStrip(strip):
     for i in range(0, strip.numPixels()):
         strip.setPixelColor(i, Color(0,0,0))
 
+def purdueP(strip):
+    """p = [
+        0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+        0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,0,
+        0,0,0,0,0,0,1,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,1,
+        0,0,0,0,0,1,2,3,3,3,3,3,3,3,3,2,2,2,2,2,2,3,3,3,3,3,3,3,2,1,
+        0,0,0,0,0,1,2,2,2,3,3,3,3,3,2,1,1,1,1,1,1,2,3,3,3,3,3,3,2,1,
+        0,0,0,0,0,1,1,1,2,3,3,3,3,3,3,2,2,2,2,2,2,3,3,3,3,3,3,2,1,1,
+        0,0,0,0,0,0,0,1,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,1,0,
+        0,0,0,0,0,0,0,1,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,0,
+        0,0,0,0,0,0,1,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,1,0,0,
+        0,0,0,0,0,0,1,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,0,0,0,
+        0,0,1,1,1,1,1,2,3,3,3,3,3,3,3,3,3,1,1,1,1,1,1,1,1,0,0,0,0,0,
+        0,0,1,2,2,2,2,2,3,3,3,3,3,3,3,3,2,2,1,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,1,2,3,3,3,3,3,3,3,3,3,3,3,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,1,2,3,3,3,3,3,3,3,3,3,3,3,3,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    ]
+    """
+    """p = [
+        0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+        0,0,0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,0,
+        0,0,0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,
+        0,0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,
+        0,0,0,0,0,1,3,3,3,3,3,3,3,3,3,1,1,1,1,1,1,3,3,3,3,3,3,3,3,1,
+        0,0,0,0,0,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,
+        0,0,0,0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,0,
+        0,0,0,0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,0,
+        0,0,0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,0,0,
+        0,0,0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,0,0,0,
+        0,0,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,1,1,1,1,1,1,1,1,0,0,0,0,0,
+        0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    ]
+    """
+    p = [
+        0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+        0,0,0,0,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,0,
+        0,0,0,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        0,0,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,1,1,1,1,3,3,3,3,3,3,3,3,3,
+        0,0,0,0,1,1,3,3,3,3,3,3,3,3,3,3,1,1,1,1,1,1,1,3,3,3,3,3,3,3,
+        0,0,0,0,1,1,1,1,1,1,3,3,3,3,3,1,1,1,1,1,1,1,3,3,3,3,3,3,3,1,
+        0,0,0,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,0,
+        0,0,0,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,0,
+        0,0,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,0,0,
+        0,0,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,0,0,0,
+        0,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,1,1,1,1,1,1,1,1,1,0,0,0,0,0,
+        0,1,1,1,1,1,3,3,3,3,3,3,3,3,3,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,
+        1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,
+        1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,
+        1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+    ]
 
-#def sendReRack(option):
+    p = transform(p)
+    for i in range(0, len(p)):
+        if(p[i] == 0):
+            #strip.setPixelColor(i, Color(200, 200, 200))
+            strip.setPixelColor(i, Color(0, 0, 0))
+        if(p[i] == 1):
+            strip.setPixelColor(i, Color(0, 0, 0))
+            #strip.setPixelColor(i, Color(10, 10, 5))
+        if(p[i] == 2):
+            strip.setPixelColor(i, Color(64, 88, 5))
+            #strip.setPixelColor(i, Color(105, 105, 105))
+        if(p[i] == 3):    
+            strip.setPixelColor(i, Color(129, 177 , 11))
+            strip.show()
+            time.sleep(5)
+    return()
+
+def usaFlag(strip):
+    p = [
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+        1,0,1,0,1,0,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,1,0,1,0,1,0,1,0,1,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+        1,0,1,0,1,0,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,1,0,1,0,1,0,1,0,1,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+        1,0,1,0,1,0,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+    ]
+
+    p = transform(p)
+    for i in range(0, len(p)):
+        if(p[i] == 0):
+            #strip.setPixelColor(i, Color(200, 200, 200))
+            strip.setPixelColor(i, Color(100, 100, 100))
+        if(p[i] == 1):
+            strip.setPixelColor(i, Color(0, 0, 255))
+        if(p[i] == 2):
+            strip.setPixelColor(i, Color(0, 255, 0))
+        if(p[i] == 3):    
+            strip.setPixelColor(i, Color(0, 0, 0))
+            strip.show()
+            time.sleep(5)
+    return()
+
+def twochase(strip, col1, col2):
+    for i in range(0, LED_COUNT):
+        strip.setPixelColor(i, col1)
+        strip.setPixelColor(LED_COUNT - 1 - i)
+        if(i == LED_COUNT - 1 - i):
+            break;
+        strip.show()
+    return()
 
 
+        
 def main():
     #Socket
     #sd = socket.socket(socket.AF_UNIX)
     #sd.bind('/home/pi/game')
-    
+
     #Vars
     matrix = numpy.zeros((30,15))
-    scoreMode = True
-    redScore = 10
-    blueScore = 10
+    #scoreMode = True
+    #redScore = 10
+    #blueScore = 10
+    redScore = int(sys.argv[1])
+    blueScore = int(sys.argv[2])
+    scoreMode = int(sys.argv[3])
+    recentScore = sys.argv[4]
+    
+    
     initStarts()
     
-
+    '''
     print(red1)
     print("")
     print(red2)
@@ -299,7 +439,7 @@ def main():
     print("")
     print(blue2)
     print("")
-
+    '''
 
     #***** LED MATRIX ************
     # Create NeoPixel object with appropriate configuration.
@@ -319,53 +459,81 @@ def main():
 
     #******* BUTTONS ***********
 
-    h = 1
-    #sd.listen(5)
-    #(client, addr) = sd.accept()
-    #sd.settimeout(.01)
+    if(recentScore == 'r'):
+        theaterChase(strip, Color(0,   127,   0), 50, 5)  # Red theater chase
+    elif(recentScore == 'b'):
+        theaterChase(strip, Color(  0,   0, 127), 50, 5)  # Blue theater chase
 
-    while (h == 1):
-    
-        #How to get this to run smooth while still listening for input from micro?
-        time.sleep(3)
+    #Temporary
+    purdueP(strip)
 
-        if (scoreMode):
+    clearStrip(strip)
+    setBorder(strip)
+    strip.show()
+
+
+    pattern = {
+            0  : outputScore(strip, redScore, blueScore, False),
+            1  : purdueP(strip),
+            2  : usaFlag(strip),
+            3  : twochase(strip, Color(255, 0, 0), Color(0, 0, 255)),
+            4  : colorWipe(strip, Color(255, 0, 0)),  # Green wipe,
+            5  : colorWipe(strip, Color(0, 255, 0)),
+            6  : colorWipe(strip, Color(0, 0, 255)),
+            7  : rainbow(strip),
+            8  : rainbowCycle(strip),
+            9 : theaterChase(strip, Color(127, 127, 127))
+    }
+    while(True):
+        pattern.get(scoreMode % PATTERN_COUNT)
+
+    '''
+    while(True):
+        if (scoreMode == 0):
+            #print("Displaying Score")
             outputScore(strip,redScore,blueScore, False)
-        redScore = redScore - 1
-        blueScore = blueScore - 1
-        if (redScore < 0):
-            h = 0
-            '''sd.listen(5)
-            try:
-                print("Listen")
-                value = client.recv(1024)
-                if(value == 'r'):
-                    redScore -= 1
-                    print('Red: ', redScore)
-                elif(value == 'b'):
-                    blueScore -= 1
-                    print('Blue: ', blueScore)
-            except:
-                pass
             
         else:
-            #print designs
-            theaterChaseRainbow(strip)
+    '''
+            
             '''
-    '''
-    # Color wipe animations.
-    colorWipe(strip, Color(255, 0, 0))  # Green wipe
-    colorWipe(strip, Color(0, 255, 0))  # Red wipe
-    colorWipe(strip, Color(0, 0, 255))  # Blue wipe
-    # Theater chase animations.
-    theaterChase(strip, Color(127, 127, 127))  # White theater chase
-    theaterChase(strip, Color(127,   0,   0))  # Red theater chase
-    theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
-    # Rainbow animations.
-    rainbow(strip)
-    rainbowCycle(strip)
-    theaterChaseRainbow(strip)
-    '''
+            usaFlag(strip)
+            twochase(strip, Color(255, 0, 0), Color(0, 0, 255))
+            colorWipe(strip, Color(255, 0, 0))  # Green wipe
+            colorWipe(strip, Color(0, 255, 0))  # Red wipe
+            colorWipe(strip, Color(0, 0, 255))  # Blue wipe
+            # Theater chase animations.
+            #theaterChase(strip, Color(127,   0,   0))  # Red theater chase
+            #theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
+            # Rainbow animations.
+            rainbow(strip)
+            rainbowCycle(strip)
+            '''
+            #time.sleep(1.5)            
+            
+        #redScore = redScore - 1
+        #blueScore = blueScore - 1
+        #if (redScore < 0):
+        #h = 0
+            
+        #else:
+        #print designs
+        #theaterChaseRainbow(strip)
+            
+        '''
+        # Color wipe animations.
+        colorWipe(strip, Color(255, 0, 0))  # Green wipe
+        colorWipe(strip, Color(0, 255, 0))  # Red wipe
+        colorWipe(strip, Color(0, 0, 255))  # Blue wipe
+        # Theater chase animations.
+        theaterChase(strip, Color(127, 127, 127))  # White theater chase
+        theaterChase(strip, Color(127,   0,   0))  # Red theater chase
+        theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
+        # Rainbow animations.
+        rainbow(strip)
+        rainbowCycle(strip)
+        theaterChaseRainbow(strip)
+        '''
 
 if __name__ == '__main__':
     main()

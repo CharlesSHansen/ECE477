@@ -6,7 +6,8 @@ from pld import PLD
 import pins
 import RPi.GPIO as GPIO
 import serial
-import socket
+import os
+import subprocess
 
 Start = 0
 globalLock = 0
@@ -20,6 +21,15 @@ def sendMicro(message,port):
         #port.write(w)
         #print(port.readline())
 
+def updateScore(scoreprog, RedTeamScore, BlueTeamScore, scoreMode, recentScore):
+    if(scoreprog != None):
+        scoreprog.terminate()
+        scoreprog.kill()
+    scoreargs = "exec /usr/bin/python main.py " + str(RedTeamScore) + " " + str(BlueTeamScore) + " " + str(scoreMode) + " " + str(recentScore)
+    #print scoreargs
+    scoreprog = subprocess.Popen(scoreargs, shell=True)
+    return scoreprog
+        
 def main():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
@@ -27,12 +37,12 @@ def main():
     #Socket Communication
     #sd = socket.socket(socket.AF_UNIX)
     #sd.connect('/home/pi/game')
-    
+    #sd.send('connect')
     #UART Port declaration
-    port = serial.Serial("/dev/ttyS0", baudrate=9600, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=1.0)
+    #port = serial.Serial("/dev/ttyS0", baudrate=9600, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=1.0)
    
-    sendMicro("g",port)
-    return
+    #sendMicro("g",port)
+    #return
 
     global Start
     global globalLock
@@ -48,6 +58,14 @@ def main():
     BlueRack = 2
     BlueRackFlag = 0
 
+    if(GPIO.input(22) == 1):
+        scoreMode = 0
+    else:
+        scoreMode = 1
+
+    scoreprog = updateScore(None, RedTeamScore, BlueTeamScore, scoreMode, None)
+
+    
     while(True):
         #Global Lock
         if(globalLock):
@@ -57,19 +75,32 @@ def main():
                 print("Lock removed")
         else:  #Process Flag
             if(RedFlag):
-                print("Sending Red Score")
                 RedFlag = 0
-                sd.send('r')
+                scoreprog = updateScore(None, RedTeamScore, BlueTeamScore, scoreMode, r)
+                time.sleep(2)
+
             if(BlueFlag):
-                print("Sending Blue Score")
                 BlueFlag = 0
-                sd.send('b')
-                
+                scoreprog = updateScore(None, RedTeamScore, BlueTeamScore, scoreMode, r)
+                time.sleep(2)
+
         #Set Start
         if(GPIO.input(4) == 1 and Start == 0):
             Start = 1
             print("Game Start")
+            
+        #Score Mode Switch
+        if(GPIO.input(22) == 1 and scoreMode != 0):
+            scoreMode = 0
+            scoreprog = updateScore(None, RedTeamScore, BlueTeamScore, scoreMode, None)
 
+        #Switch Pattern
+        if(GPIO.input(10) == 1 and scoreMode != 0):
+            scoreMode += 1
+            scoreprog = updateScore(None, RedTeamScore, BlueTeamScore, scoreMode, None)
+
+
+            
         #Reset Game
         if(GPIO.input(2) == 1):
             print("Game Reset")
