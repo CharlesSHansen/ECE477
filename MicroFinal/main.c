@@ -4,6 +4,8 @@
 //
 //****************************************************************************
 
+#define RED_TEAM 1
+
 #include "msp432p401r.h"
 #include "stdint.h"
 #include "stdio.h"
@@ -143,16 +145,16 @@ void main()
 
 
 
-    MAP_GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P3,GPIO_PIN2 | GPIO_PIN3, GPIO_PRIMARY_MODULE_FUNCTION);
+    MAP_GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P1,GPIO_PIN2 | GPIO_PIN3, GPIO_PRIMARY_MODULE_FUNCTION);
 
     MAP_CS_setDCOCenteredFrequency(CS_DCO_FREQUENCY_12);
 
-    MAP_UART_initModule(EUSCI_A2_BASE, &uartConfig);
+    MAP_UART_initModule(EUSCI_A0_BASE, &uartConfig);
 
-    MAP_UART_enableModule(EUSCI_A2_BASE);
+    MAP_UART_enableModule(EUSCI_A0_BASE);
 
-    MAP_UART_enableInterrupt(EUSCI_A2_BASE, EUSCI_A_UART_RECEIVE_INTERRUPT);
-    MAP_Interrupt_enableInterrupt(INT_EUSCIA2);
+    MAP_UART_enableInterrupt(EUSCI_A0_BASE, EUSCI_A_UART_RECEIVE_INTERRUPT);
+    MAP_Interrupt_enableInterrupt(INT_EUSCIA0);
     //MAP_Interrupt_enableSleepOnIsrExit();
     //MAP_Interrupt_enableMaster();
 
@@ -246,7 +248,7 @@ void main()
             //printDiffs();
 
             for(i = 0; i< 1; i++){
-                printCurrents();
+                //printCurrents();
                 diff = abs(CupCurrent[i] - CupPrevious[i]);
                 if ((diff > THRESHHOLD)){// & CupPosition[i] == 1){
                     if(BallIn[i] == 0) {
@@ -273,11 +275,11 @@ void main()
 
         //**** CHECK FOR RE-RACK FROM UART ************
         //*********************************************
-      /*  if (uartFlag == 1) {
+        if (uartFlag == 1) {
             printf("Got UART\n");
             uartFlag = 0;
             switch(uartChar) {
-            case 48: // 0 - 3-2-1
+            case 0: // 0 - 3-2-1
                 // 0,1,2,3,4,5 up
                 for (i = 0; i < SIZE_321Up; i++)  {
                     if (CupPosition[_321Up[i]] == 1) {
@@ -292,7 +294,7 @@ void main()
                     }
                 }
                 break;
-            case 49: // 1 - Diamond
+            case 1: // 1 - Diamond
                 // 0,1,2,4 up
                 for (i = 0; i < SIZE_DiamondUp; i++)  {
                     if (CupPosition[_DiamondUp[i]] == 1) {
@@ -307,7 +309,7 @@ void main()
                     }
                 }
                 break;
-            case 50: // 2 - Box
+            case 2: // 2 - Box
                 // 1,2,4,7,8
                 for (i = 0; i < SIZE_BoxUp; i++)  {
                     if (CupPosition[_BoxUp[i]] == 1) {
@@ -322,7 +324,7 @@ void main()
                     }
                 }
                 break;
-            case 51: // 3 - Gentlemen's
+            case 3: // 3 - Gentlemen's
                 // 4, 8
                 for (i = 0; i < SIZE_GentleUp; i++)  {
                     if (CupPosition[_GentleUp[i]] == 1) {
@@ -337,7 +339,7 @@ void main()
                     }
                 }
                 break;
-            case 52: // 4 - Line
+            case 4: // 4 - Line
                 // 1,4,8
                 for (i = 0; i < SIZE_LineUp; i++)  {
                     if (CupPosition[_LineUp[i]] == 1) {
@@ -352,7 +354,7 @@ void main()
                     }
                 }
                 break;
-            case 53: // Triangle
+            case 5: // Triangle
                 // 4,7,8
                 for (i = 0; i < SIZE_TriUp; i++)  {
                     if (CupPosition[_TriUp[i]] == 1) {
@@ -372,8 +374,8 @@ void main()
             }
 
 
-            }
-        }*/
+
+        }
 
         //printf("start motors\n");
         //**** CHECK FOR ANY MOTOR MOVEMENT SET *******
@@ -437,9 +439,14 @@ void main()
 
 void pulseMotorDown(int a) {
     int i;
+
+    int x;
     P7->OUT |= BIT4;
-    for (i = 0; i < 1000; i++)
-        { }
+    for (i = 0; i < 100000; i++)
+        {
+            x = i;
+
+        }
     P7->OUT &= ~BIT4;
 }
 
@@ -477,17 +484,29 @@ void TA1_0_IRQHandler(void) {
     TIMER_A1->CCR[0] += 1;              // Add Offset to TACCR0
 }
 
-void EUSCIA2_IRQHandler(void) // Code from DriverLib example
+void EUSCIA0_IRQHandler(void) // Code from DriverLib example
 {
-    uint32_t status = MAP_UART_getEnabledInterruptStatus(EUSCI_A2_BASE);
+    uint32_t status = MAP_UART_getEnabledInterruptStatus(EUSCI_A0_BASE);
 
-    MAP_UART_clearInterruptFlag(EUSCI_A2_BASE, status);
+    MAP_UART_clearInterruptFlag(EUSCI_A0_BASE, status);
 
     if(status & EUSCI_A_UART_RECEIVE_INTERRUPT_FLAG)
     {
-        uartChar = MAP_UART_receiveData(EUSCI_A2_BASE);
-        uartFlag = 1;
-        printf("%c\n",MAP_UART_receiveData(EUSCI_A2_BASE));
+        uartChar = MAP_UART_receiveData(EUSCI_A0_BASE);
+        printf("%d\n",uartChar);
+        if (RED_TEAM == 1) {
+            if (uartChar >= 97) {
+                uartChar -= 97;
+                uartFlag = 1;
+            }
+        }
+        else {
+            if (uartChar <= 70) {
+                uartChar -= 65;
+                uartFlag = 1;
+            }
+        }
+        //printf("%c\n",MAP_UART_receiveData(EUSCI_A2_BASE));
        // MAP_UART_transmitData(EUSCI_A2_BASE, MAP_UART_receiveData(EUSCI_A2_BASE));
     }
 
