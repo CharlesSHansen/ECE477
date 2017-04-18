@@ -4,7 +4,7 @@
 //
 //****************************************************************************
 
-#define RED_TEAM 1
+#define RED_TEAM 0
 
 #include "msp432p401r.h"
 #include "stdint.h"

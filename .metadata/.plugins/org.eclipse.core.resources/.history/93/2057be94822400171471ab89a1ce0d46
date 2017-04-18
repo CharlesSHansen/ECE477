@@ -4,7 +4,7 @@
 //
 //****************************************************************************
 
-#define RED_TEAM 1
+#define RED_TEAM 0
 
 #include "msp432p401r.h"
 #include "stdint.h"
@@ -92,7 +92,6 @@ void main()
     volatile unsigned int i;
     unsigned int diff;
 
-    WDTCTL = WDTPW | WDTHOLD;                 // Stop WDT Interrupt
     // ******* GPIO *****************
     // ******************************
 
@@ -121,7 +120,7 @@ void main()
     // ***************************************
     // ***************************************
 
-
+    WDTCTL = WDTPW | WDTHOLD;                 // Stop WDT Interrupt
 
     __enable_irq(); // Enable interrupts
 
@@ -427,16 +426,15 @@ void main()
         //*********************************************
         if (motorOff == 1) {
             printf("motor timer done\n");
-            motorOff = 0;
             // TURN ALL MOTORS OFF AT ONCE
             P7->OUT &= ~(BIT4 | BIT5 | BIT6 | BIT7);
             P8->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
             P3->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7);
             P9->OUT &= ~BIT0;
-
+            motorOff = 0;
             for (i = 0; i < 10; i++) {
                 motorDown[i] = 0;
-                motorUp[i] = 0;
+                motorUp[0] = 0;
             }
         }
 
