@@ -4,7 +4,7 @@
 //
 //****************************************************************************
 
-#define RED_TEAM 1
+#define RED_TEAM 0
 
 #include "msp432p401r.h"
 #include "stdint.h"
@@ -14,7 +14,7 @@
 #include "msp_compatibility.h"
 #include "driverlib.h"
 //#include "msp.h"
-#define THRESHHOLD              3000
+#define THRESHHOLD              1500
 #define MOTOR_TIME              10
 #define WAIT_TIME               6
 #define NVIC_EN0_R              0xE000E100
@@ -26,11 +26,14 @@
 #define SIZE_TriUp              3
 
 void printCurrents(void);
+void printPositions(void);
+
 void clearInterrupt(uint64_t);
 uint64_t getStatus();
 void setPWM(int);
 void updateMotors();
 void pulseMotorDown(int);
+void pulseScore();
 void scoreDetect();
 
 
@@ -85,7 +88,7 @@ const eUSCI_UART_Config uartConfig =
 
 
 void main()
-{
+ {
     volatile unsigned int i;
     unsigned int diff;
 
@@ -101,7 +104,10 @@ void main()
    // P10->DIR |= BIT5;
    // P10->OUT &= BIT5;
     P10->DIR |= BIT5;
-    P10->OUT &= ~BIT5;                       // Clear LED to start
+    P10->OUT &= ~BIT5;                        // Clear LED to start
+
+    P2->DIR |= BIT4;
+    P2-> OUT &= ~BIT4;
 
 
 
@@ -246,21 +252,22 @@ void main()
             //printf("%d\n",CupCurrent[i]);
             readFlag = 0;
             //printDiffs();
+            printPositions();
+            for(i = 0; i< 4; i++){
 
-            for(i = 0; i< 1; i++){
-                //printCurrents();
                 diff = abs(CupCurrent[i] - CupPrevious[i]);
-                if ((diff > THRESHHOLD)){// & CupPosition[i] == 1){
+                if ((diff > THRESHHOLD) && CupPosition[i] == 1){
                     if(BallIn[i] == 0) {
-                        printf("ball entered\n");
+                        printf("ball entered %d\n",i);
                         // BALL ENTERING CUP - FLASH LIGHTS AND SEND SCORE TO MICRO
                         //P10->OUT ^= BIT5;
                         BallIn[i] = 1;
+                        pulseScore();
                         pulseMotorDown(i);
                         //scoreDetect();
                     }
                     else{
-                        printf("ball left\n");
+                        printf("ball left %d\n",i);
                         // BALL LEAVING CUP - MOVE MOTOR DOWN
                        // P10->OUT ^= BIT5;
                         CupPosition[i] = 0;
@@ -282,15 +289,15 @@ void main()
             case 0: // 0 - 3-2-1
                 // 0,1,2,3,4,5 up
                 for (i = 0; i < SIZE_321Up; i++)  {
-                    if (CupPosition[_321Up[i]] == 1) {
-                        motorDown[_321Up[i]] = 1;
-                        CupPosition[_321Up[i]] = 0;
+                    if (CupPosition[_321Up[i]] == 0) {
+                        motorUp[_321Up[i]] = 1;
+                        CupPosition[_321Up[i]] = 1;
                     }
                 }
                 for (i = 0; i < (10 - SIZE_321Up); i++) {
-                    if (CupPosition[_321Down[i]] == 0) {
-                        motorUp[_321Down[i]] = 1;
-                        CupPosition[_321Down[i]] = 1;
+                    if (CupPosition[_321Down[i]] == 1) {
+                        motorDown[_321Down[i]] = 1;
+                        CupPosition[_321Down[i]] = 0;
                     }
                 }
                 break;
@@ -437,6 +444,20 @@ void main()
     }
 }
 
+void pulseScore() {
+    int i;
+
+    int x;
+    P2->OUT |= BIT4;
+    for (i = 0; i < 100000; i++)
+        {
+            x = i;
+
+        }
+    P2->OUT &= ~BIT4;
+}
+
+
 void pulseMotorDown(int a) {
     int i;
 
@@ -493,7 +514,6 @@ void EUSCIA0_IRQHandler(void) // Code from DriverLib example
     if(status & EUSCI_A_UART_RECEIVE_INTERRUPT_FLAG)
     {
         uartChar = MAP_UART_receiveData(EUSCI_A0_BASE);
-        printf("%d\n",uartChar);
         if (RED_TEAM == 1) {
             if (uartChar >= 97) {
                 uartChar -= 97;
@@ -506,6 +526,8 @@ void EUSCIA0_IRQHandler(void) // Code from DriverLib example
                 uartFlag = 1;
             }
         }
+        printf("%d\n",uartChar);
+
         //printf("%c\n",MAP_UART_receiveData(EUSCI_A2_BASE));
        // MAP_UART_transmitData(EUSCI_A2_BASE, MAP_UART_receiveData(EUSCI_A2_BASE));
     }
@@ -573,6 +595,15 @@ void printCurrents() {
         printf("%d\t",CupCurrent[i]);
     }
     printf("\n");
+}
+
+void printPositions() {
+    printf("**********************************************\n");
+        int i;
+        for (i = 0; i < 10; i++) {
+            printf("%d\t",CupPosition[i]);
+        }
+        printf("\n");
 }
 
 
