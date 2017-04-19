@@ -4,6 +4,8 @@
 //
 //****************************************************************************
 
+#define RED_TEAM 1
+
 #include "msp432p401r.h"
 #include "stdint.h"
 #include "stdio.h"
@@ -12,7 +14,7 @@
 #include "msp_compatibility.h"
 #include "driverlib.h"
 //#include "msp.h"
-#define THRESHHOLD              3000
+#define THRESHHOLD              1500
 #define MOTOR_TIME              10
 #define WAIT_TIME               6
 #define NVIC_EN0_R              0xE000E100
@@ -24,11 +26,14 @@
 #define SIZE_TriUp              3
 
 void printCurrents(void);
+void printPositions(void);
+
 void clearInterrupt(uint64_t);
 uint64_t getStatus();
 void setPWM(int);
 void updateMotors();
 void pulseMotorDown(int);
+void pulseScore();
 void scoreDetect();
 
 
@@ -83,10 +88,11 @@ const eUSCI_UART_Config uartConfig =
 
 
 void main()
-{
+ {
     volatile unsigned int i;
     unsigned int diff;
 
+    WDTCTL = WDTPW | WDTHOLD;                 // Stop WDT Interrupt
     // ******* GPIO *****************
     // ******************************
 
@@ -99,7 +105,10 @@ void main()
    // P10->DIR |= BIT5;
    // P10->OUT &= BIT5;
     P10->DIR |= BIT5;
-    P10->OUT &= ~BIT5;                       // Clear LED to start
+    P10->OUT &= ~BIT5;                        // Clear LED to start
+
+    P2->DIR |= BIT4;
+    P2-> OUT &= ~BIT4;
 
 
 
@@ -112,7 +121,7 @@ void main()
     // ***************************************
     // ***************************************
 
-    WDTCTL = WDTPW | WDTHOLD;                 // Stop WDT Interrupt
+
 
     __enable_irq(); // Enable interrupts
 
@@ -143,16 +152,16 @@ void main()
 
 
 
-    MAP_GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P3,GPIO_PIN2 | GPIO_PIN3, GPIO_PRIMARY_MODULE_FUNCTION);
+    MAP_GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P1,GPIO_PIN2 | GPIO_PIN3, GPIO_PRIMARY_MODULE_FUNCTION);
 
     MAP_CS_setDCOCenteredFrequency(CS_DCO_FREQUENCY_12);
 
-    MAP_UART_initModule(EUSCI_A2_BASE, &uartConfig);
+    MAP_UART_initModule(EUSCI_A0_BASE, &uartConfig);
 
-    MAP_UART_enableModule(EUSCI_A2_BASE);
+    MAP_UART_enableModule(EUSCI_A0_BASE);
 
-    MAP_UART_enableInterrupt(EUSCI_A2_BASE, EUSCI_A_UART_RECEIVE_INTERRUPT);
-    MAP_Interrupt_enableInterrupt(INT_EUSCIA2);
+    MAP_UART_enableInterrupt(EUSCI_A0_BASE, EUSCI_A_UART_RECEIVE_INTERRUPT);
+    MAP_Interrupt_enableInterrupt(INT_EUSCIA0);
     //MAP_Interrupt_enableSleepOnIsrExit();
     //MAP_Interrupt_enableMaster();
 
@@ -244,21 +253,22 @@ void main()
             //printf("%d\n",CupCurrent[i]);
             readFlag = 0;
             //printDiffs();
+            printPositions();
+            for(i = 0; i< 4; i++){
 
-            for(i = 0; i< 1; i++){
-                printCurrents();
                 diff = abs(CupCurrent[i] - CupPrevious[i]);
-                if ((diff > THRESHHOLD)){// & CupPosition[i] == 1){
+                if ((diff > THRESHHOLD) && CupPosition[i] == 1){
                     if(BallIn[i] == 0) {
-                        printf("ball entered\n");
+                        printf("ball entered %d\n",i);
                         // BALL ENTERING CUP - FLASH LIGHTS AND SEND SCORE TO MICRO
                         //P10->OUT ^= BIT5;
                         BallIn[i] = 1;
+                        pulseScore();
                         pulseMotorDown(i);
                         //scoreDetect();
                     }
                     else{
-                        printf("ball left\n");
+                        printf("ball left %d\n",i);
                         // BALL LEAVING CUP - MOVE MOTOR DOWN
                        // P10->OUT ^= BIT5;
                         CupPosition[i] = 0;
@@ -273,26 +283,26 @@ void main()
 
         //**** CHECK FOR RE-RACK FROM UART ************
         //*********************************************
-      /*  if (uartFlag == 1) {
+        if (uartFlag == 1) {
             printf("Got UART\n");
             uartFlag = 0;
             switch(uartChar) {
-            case 48: // 0 - 3-2-1
+            case 0: // 0 - 3-2-1
                 // 0,1,2,3,4,5 up
                 for (i = 0; i < SIZE_321Up; i++)  {
-                    if (CupPosition[_321Up[i]] == 1) {
-                        motorDown[_321Up[i]] = 1;
-                        CupPosition[_321Up[i]] = 0;
+                    if (CupPosition[_321Up[i]] == 0) {
+                        motorUp[_321Up[i]] = 1;
+                        CupPosition[_321Up[i]] = 1;
                     }
                 }
                 for (i = 0; i < (10 - SIZE_321Up); i++) {
-                    if (CupPosition[_321Down[i]] == 0) {
-                        motorUp[_321Down[i]] = 1;
-                        CupPosition[_321Down[i]] = 1;
+                    if (CupPosition[_321Down[i]] == 1) {
+                        motorDown[_321Down[i]] = 1;
+                        CupPosition[_321Down[i]] = 0;
                     }
                 }
                 break;
-            case 49: // 1 - Diamond
+            case 1: // 1 - Diamond
                 // 0,1,2,4 up
                 for (i = 0; i < SIZE_DiamondUp; i++)  {
                     if (CupPosition[_DiamondUp[i]] == 1) {
@@ -307,7 +317,7 @@ void main()
                     }
                 }
                 break;
-            case 50: // 2 - Box
+            case 2: // 2 - Box
                 // 1,2,4,7,8
                 for (i = 0; i < SIZE_BoxUp; i++)  {
                     if (CupPosition[_BoxUp[i]] == 1) {
@@ -322,7 +332,7 @@ void main()
                     }
                 }
                 break;
-            case 51: // 3 - Gentlemen's
+            case 3: // 3 - Gentlemen's
                 // 4, 8
                 for (i = 0; i < SIZE_GentleUp; i++)  {
                     if (CupPosition[_GentleUp[i]] == 1) {
@@ -337,7 +347,7 @@ void main()
                     }
                 }
                 break;
-            case 52: // 4 - Line
+            case 4: // 4 - Line
                 // 1,4,8
                 for (i = 0; i < SIZE_LineUp; i++)  {
                     if (CupPosition[_LineUp[i]] == 1) {
@@ -352,7 +362,7 @@ void main()
                     }
                 }
                 break;
-            case 53: // Triangle
+            case 5: // Triangle
                 // 4,7,8
                 for (i = 0; i < SIZE_TriUp; i++)  {
                     if (CupPosition[_TriUp[i]] == 1) {
@@ -372,8 +382,8 @@ void main()
             }
 
 
-            }
-        }*/
+
+        }
 
         //printf("start motors\n");
         //**** CHECK FOR ANY MOTOR MOVEMENT SET *******
@@ -417,15 +427,16 @@ void main()
         //*********************************************
         if (motorOff == 1) {
             printf("motor timer done\n");
+            motorOff = 0;
             // TURN ALL MOTORS OFF AT ONCE
             P7->OUT &= ~(BIT4 | BIT5 | BIT6 | BIT7);
             P8->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
             P3->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7);
             P9->OUT &= ~BIT0;
-            motorOff = 0;
+
             for (i = 0; i < 10; i++) {
                 motorDown[i] = 0;
-                motorUp[0] = 0;
+                motorUp[i] = 0;
             }
         }
 
@@ -435,11 +446,30 @@ void main()
     }
 }
 
+void pulseScore() {
+    int i;
+
+    int x;
+    P2->OUT |= BIT4;
+    for (i = 0; i < 100000; i++)
+        {
+            x = i;
+
+        }
+    P2->OUT &= ~BIT4;
+}
+
+
 void pulseMotorDown(int a) {
     int i;
+
+    int x;
     P7->OUT |= BIT4;
-    for (i = 0; i < 1000; i++)
-        { }
+    for (i = 0; i < 100000; i++)
+        {
+            x = i;
+
+        }
     P7->OUT &= ~BIT4;
 }
 
@@ -477,17 +507,30 @@ void TA1_0_IRQHandler(void) {
     TIMER_A1->CCR[0] += 1;              // Add Offset to TACCR0
 }
 
-void EUSCIA2_IRQHandler(void) // Code from DriverLib example
+void EUSCIA0_IRQHandler(void) // Code from DriverLib example
 {
-    uint32_t status = MAP_UART_getEnabledInterruptStatus(EUSCI_A2_BASE);
+    uint32_t status = MAP_UART_getEnabledInterruptStatus(EUSCI_A0_BASE);
 
-    MAP_UART_clearInterruptFlag(EUSCI_A2_BASE, status);
+    MAP_UART_clearInterruptFlag(EUSCI_A0_BASE, status);
 
     if(status & EUSCI_A_UART_RECEIVE_INTERRUPT_FLAG)
     {
-        uartChar = MAP_UART_receiveData(EUSCI_A2_BASE);
-        uartFlag = 1;
-        printf("%c\n",MAP_UART_receiveData(EUSCI_A2_BASE));
+        uartChar = MAP_UART_receiveData(EUSCI_A0_BASE);
+        if (RED_TEAM == 1) {
+            if (uartChar >= 97) {
+                uartChar -= 97;
+                uartFlag = 1;
+            }
+        }
+        else {
+            if (uartChar <= 70) {
+                uartChar -= 65;
+                uartFlag = 1;
+            }
+        }
+        printf("%d\n",uartChar);
+
+        //printf("%c\n",MAP_UART_receiveData(EUSCI_A2_BASE));
        // MAP_UART_transmitData(EUSCI_A2_BASE, MAP_UART_receiveData(EUSCI_A2_BASE));
     }
 
@@ -554,6 +597,15 @@ void printCurrents() {
         printf("%d\t",CupCurrent[i]);
     }
     printf("\n");
+}
+
+void printPositions() {
+    printf("**********************************************\n");
+        int i;
+        for (i = 0; i < 10; i++) {
+            printf("%d\t",CupPosition[i]);
+        }
+        printf("\n");
 }
 
 
