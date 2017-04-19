@@ -74,7 +74,12 @@ def main():
         print "(debug) Initializing Variables: ", time.strftime('%H:%M:%S')
 
     Start = 1
-        
+
+    #Send out an nRST
+    GPIO.output(19,1)
+    time.sleep(1)
+    GPIO.output(19,0)
+    
     RedTeamScore = 10
     RedFlag = 0
     RedRack = 2
@@ -170,9 +175,9 @@ def main():
             BlueRack = 2
             BlueRackFlag = 0
 
-            GPIO.output(3,1)
-            time.sleep(0.1)
-            GPIO.output(3,0)
+            GPIO.output(19,1)
+            time.sleep(0.3)
+            GPIO.output(19,0)
 
 
         #Start the Game    

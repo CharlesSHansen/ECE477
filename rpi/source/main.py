@@ -397,8 +397,8 @@ def usaFlag(strip):
             strip.setPixelColor(i, Color(0, 255, 0))
         if(p[i] == 3):    
             strip.setPixelColor(i, Color(0, 0, 0))
-            strip.show()
-            time.sleep(5)
+    strip.show()
+    time.sleep(5)
     return()
 
 def twochase(strip, col1, col2):
@@ -429,17 +429,6 @@ def main():
     
     
     initStarts()
-    
-    '''
-    print(red1)
-    print("")
-    print(red2)
-    print("")
-    print(blue1)
-    print("")
-    print(blue2)
-    print("")
-    '''
 
     #***** LED MATRIX ************
     # Create NeoPixel object with appropriate configuration.
@@ -465,13 +454,13 @@ def main():
         theaterChase(strip, Color(  0,   0, 127), 50, 5)  # Blue theater chase
 
     #Temporary
-    purdueP(strip)
+    #purdueP(strip)
 
-    clearStrip(strip)
-    setBorder(strip)
-    strip.show()
+    #clearStrip(strip)
+    #setBorder(strip)
+    #strip.show()
 
-
+    '''
     pattern = {
             0  : outputScore(strip, redScore, blueScore, False),
             1  : purdueP(strip),
@@ -482,59 +471,30 @@ def main():
             6  : colorWipe(strip, Color(0, 0, 255)),
             7  : rainbow(strip),
             8  : rainbowCycle(strip),
-            9 : theaterChase(strip, Color(127, 127, 127))
+            9  : theaterChase(strip, Color(127, 127, 127))
     }
-    while(True):
-        pattern.get(scoreMode % PATTERN_COUNT)
-
     '''
     while(True):
-        if (scoreMode == 0):
-            #print("Displaying Score")
-            outputScore(strip,redScore,blueScore, False)
-            
-        else:
-    '''
-            
-            '''
+        if(scoreMode == 0):
+            outputScore(strip, redScore, blueScore, False)
+        elif(scoreMode == 1):
+            purdueP(strip)
+        elif(scoreMode == 2):
             usaFlag(strip)
+        elif(scoreMode == 3):
             twochase(strip, Color(255, 0, 0), Color(0, 0, 255))
-            colorWipe(strip, Color(255, 0, 0))  # Green wipe
-            colorWipe(strip, Color(0, 255, 0))  # Red wipe
-            colorWipe(strip, Color(0, 0, 255))  # Blue wipe
-            # Theater chase animations.
-            #theaterChase(strip, Color(127,   0,   0))  # Red theater chase
-            #theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
-            # Rainbow animations.
+        elif(scoreMode == 4):
+            colorWipe(strip, Color(255, 0, 0))
+        elif(scoreMode == 5):
+            colorWipe(strip, Color(0, 255, 0))
+        elif(scoreMode == 6):
+            colorWipe(strip, Color(0, 0, 255))
+        elif(scoreMode == 7):
             rainbow(strip)
+        elif(scoreMode == 8):
             rainbowCycle(strip)
-            '''
-            #time.sleep(1.5)            
-            
-        #redScore = redScore - 1
-        #blueScore = blueScore - 1
-        #if (redScore < 0):
-        #h = 0
-            
-        #else:
-        #print designs
-        #theaterChaseRainbow(strip)
-            
-        '''
-        # Color wipe animations.
-        colorWipe(strip, Color(255, 0, 0))  # Green wipe
-        colorWipe(strip, Color(0, 255, 0))  # Red wipe
-        colorWipe(strip, Color(0, 0, 255))  # Blue wipe
-        # Theater chase animations.
-        theaterChase(strip, Color(127, 127, 127))  # White theater chase
-        theaterChase(strip, Color(127,   0,   0))  # Red theater chase
-        theaterChase(strip, Color(  0,   0, 127))  # Blue theater chase
-        # Rainbow animations.
-        rainbow(strip)
-        rainbowCycle(strip)
-        theaterChaseRainbow(strip)
-        '''
-
+        else:
+            theaterChase(strip, Color(127, 127, 127))
 if __name__ == '__main__':
     main()
 
