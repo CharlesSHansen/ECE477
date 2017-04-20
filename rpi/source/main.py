@@ -31,10 +31,10 @@ def theaterChase(strip, color, wait_ms=50, iterations=10):
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, color)
-                strip.show()
-                time.sleep(wait_ms/1000.0)
-                for i in range(0, strip.numPixels(), 3):
-                    strip.setPixelColor(i+q, 0)
+            strip.show()
+            time.sleep(wait_ms/1000.0)
+            for i in range(0, strip.numPixels(), 3):
+                strip.setPixelColor(i+q, 0)
 
 def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
@@ -362,8 +362,7 @@ def purdueP(strip):
             #strip.setPixelColor(i, Color(105, 105, 105))
         if(p[i] == 3):    
             strip.setPixelColor(i, Color(129, 177 , 11))
-            strip.show()
-            time.sleep(5)
+    strip.show()
     return()
 
 def usaFlag(strip):
@@ -441,18 +440,22 @@ def main():
 
     #***** UART ***************
 
-    clearStrip(strip)
-    setBorder(strip)
-    strip.show()
 
 
     #******* BUTTONS ***********
+    clearStrip(strip)
+    strip.show()
 
     if(recentScore == 'r'):
-        theaterChase(strip, Color(0,   127,   0), 50, 5)  # Red theater chase
+        theaterChase(strip, Color(0,   0,   127), 50, 10)  # Red theater chase
     elif(recentScore == 'b'):
-        theaterChase(strip, Color(  0,   0, 127), 50, 5)  # Blue theater chase
-
+        theaterChase(strip, Color(  0,   127, 0), 50, 10)  # Blue theater chase
+    else:
+        purdueP(strip)
+        time.sleep(5)
+    clearStrip(strip)
+    setBorder(strip)
+    
     #Temporary
     #purdueP(strip)
 
@@ -474,6 +477,9 @@ def main():
             9  : theaterChase(strip, Color(127, 127, 127))
     }
     '''
+    #clearStrip(strip)
+    #purdueP(strip)
+    #time.sleep(5)
     while(True):
         if(scoreMode == 0):
             outputScore(strip, redScore, blueScore, False)
