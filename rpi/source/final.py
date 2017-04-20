@@ -1,18 +1,16 @@
 #!/usr/bin/python
 
-import time
-import random
-from pld import PLD
-import pins
-import RPi.GPIO as GPIO
-import serial
 import os
-import signal
+import time
 import subprocess
+import serial
+import RPi.GPIO as GPIO
+import pins
 
 Start = 0
 globalLock = 0
 globalLockTime = 0
+
 def sendMicro(message,port):
     #w = message.encode(encoding='ASCII')
     #w = bytes("dicks", "ASCII")
@@ -36,20 +34,14 @@ def sendMicro(message,port):
 
 def updateScore(scoreprog, RedTeamScore, BlueTeamScore, scoreMode, recentScore):
     if (__debug__):
-        print "(debug) Updating Score: ", time.strftime('%H:%M:%S') 
+        print "(debug) Updating Score: ", time.strftime('%H:%M:%S')
     if(scoreprog != None):
+        os.killpg(os.getpgid(scoreprog.pid), signal.SIGTERM)
         #scoreprog.terminate()
-        scoreprog.kill()
-        #os.kill(os.getpid(scoreprog.pid), signal.SIGTERM)
-        print "(debug) Killed Program: ", time.strftime('%H:%M:%S') 
-    scoreargs = ["python", "/home/pi/ECE477/rpi/source/main.py", str(RedTeamScore), str(BlueTeamScore), str(scoreMode), str(recentScore)]
+        #scoreprog.kill()
+    scoreargs = "exec /usr/bin/python main.py " + str(RedTeamScore) + " " + str(BlueTeamScore) + " " + str(scoreMode) + " " + str(recentScore)
     #print scoreargs
-    scoreprog = subprocess.Popen(scoreargs, shell=False)
-    if(recentScore == 'b'):
-        GPIO.output(23, 1)
-        time.sleep(1)
-        GPIO.output(23, 0)
-
+    scoreprog = subprocess.Popen(scoreargs, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
     return scoreprog
         
 def main():
@@ -128,14 +120,15 @@ def main():
                 if (__debug__):
                     print "(debug) Red Team Update Score: ", time.strftime('%H:%M:%S')
                 RedFlag = 0
-                scoreprog = updateScore(scoreprog, RedTeamScore, BlueTeamScore, scoreMode, 'r')
+                scoreprog = updateScore(None, RedTeamScore, BlueTeamScore, scoreMode, 'r')
                 time.sleep(1)
 
             if(BlueFlag):
                 if (__debug__):
                     print "(debug) Blue Team Update Score: ", time.strftime('%H:%M:%S')
                 BlueFlag = 0
-                scoreprog = updateScore(scoreprog, RedTeamScore, BlueTeamScore, scoreMode, 'b')
+                scoreprog = updateScore(None, RedTeamScore, BlueTeamScore, scoreMode, 'b')
+                time.sleep(1)
 
         #Set Start
         #if(GPIO.input(5) == 1 and Start == 0):
@@ -191,22 +184,25 @@ def main():
         if(Start):
             
             #Red Score Signal
-            if(GPIO.input(25) == 0 and RedFlag == 0):
+            if(GPIO.input(25) == 1 and RedFlag == 0):
                 RedFlag = 1
                 RedTeamScore -= 1
                 if (__debug__):
                     print "(debug) Red Team Scored: ", time.strftime('%H:%M:%S')
                     print "(debug) Game Score - Blue: ", BlueTeamScore, " Red: ", RedTeamScore, ": ", time.strftime('%H:%M:%S')
-                    #setGlobalLock()
+                setGlobalLock()
                 
             #Blue Score Signal
-            if(GPIO.input(10) == 0 and BlueFlag == 0):
+            if(GPIO.input(10) == 1 and BlueFlag == 0):
                 BlueFlag = 1
                 BlueTeamScore -= 1
+                GPIO.output(23, 1)
+                time.sleep(1)
+                GPIO.output(23, 0)
                 if (__debug__):
                     print "(debug) Blue Team Scored: ", time.strftime('%H:%M:%S')
                     print "(debug) Game Score - Blue: ", BlueTeamScore, " Red: ", RedTeamScore, ": ", time.strftime('%H:%M:%S')
-                    #setGlobalLock()
+                setGlobalLock()
 
             #Send Red Re-rack Signal #Talk with Mikey to see which ones are which
             if(RedRack > 0 and RedFlag == 0):
