@@ -51,6 +51,7 @@ volatile int motorOn = 0;
 volatile int motorOff = 0;
 volatile int uartFlag = 0;
 volatile int uartChar = 0;
+volatile int waitRR = 0;
 
 volatile uint8_t            _321Up[SIZE_321Up] = {0,1,2,3,4,5};
 volatile uint8_t       _321Down[10 - SIZE_321Up] = {6,7,8,9};
@@ -64,6 +65,9 @@ volatile uint8_t           _LineUp[SIZE_LineUp] = {1,4,8};
 volatile uint8_t      _LineDown[10 - SIZE_LineUp] = {0,2,3,5,6,7,9};
 volatile uint8_t            _TriUp[SIZE_TriUp] = {4,7,8};
 volatile uint8_t       _TriDown[10 - SIZE_TriUp] = {0,1,2,3,5,6,9};
+
+
+volatile int threshholds[10] = {1000,1000,1200,1000,1000,1000,1000,900,1000,1000};
 
 enum Directon {
     up,
@@ -141,11 +145,14 @@ void main()
     P8->DIR |= (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
     P3->DIR |= (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7);
     P9->DIR |= BIT0;
+    P10->DIR |= BIT4;
 
     P7->OUT &= ~(BIT4 | BIT5 | BIT6 | BIT7);
     P8->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
     P3->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7);
     P9->OUT &= ~BIT0;
+    P10->OUT &= ~BIT4;
+
 
     //********* UART CONFIG ************************************************
     //**********************************************************************
@@ -249,17 +256,18 @@ void main()
 
         //***** IR SENSOR HANDLE *****************
         //****************************************
-        if (readFlag == 1) { //NEW VALUE READ FROM ADC
-            //printf("%d\n",CupCurrent[i]);
+        if (!waitRR && readFlag == 1) { //NEW VALUE READ FROM ADC
+            printf("%d\n",CupCurrent[1]);
             readFlag = 0;
-            printDiffs();
+            //printDiffs();
+
            // printPositions();
-            for(i = 0; i< 4; i++){
+            for(i = 0; i< 10; i++){
 
                 diff = abs(CupCurrent[i] - CupPrevious[i]);
-                if ((diff > THRESHHOLD) && CupPosition[i] == 1){
+                if ((diff > threshholds[i]) && CupPosition[i] == 1){
                     if(BallIn[i] == 0) {
-                        printf("ball entered %d\n",i);
+                        printf("ball entered %d: diff: %d thresh: %d\n",i,diff,threshholds[i]);
                         // BALL ENTERING CUP - FLASH LIGHTS AND SEND SCORE TO MICRO
                         //P10->OUT ^= BIT5;
                         BallIn[i] = 1;
@@ -268,7 +276,7 @@ void main()
                         //scoreDetect();
                     }
                     else{
-                        printf("ball left %d\n",i);
+                        printf("ball left %d: diff: %d\n",i,diff);
                         // BALL LEAVING CUP - MOVE MOTOR DOWN
                        // P10->OUT ^= BIT5;
                         CupPosition[i] = 0;
@@ -297,7 +305,8 @@ void main()
                 }
                 for (i = 0; i < (10 - SIZE_321Up); i++) {
                     if (CupPosition[_321Down[i]] == 1) {
-                        motorDown[_321Down[i]] = 1;
+                        pulseMotorDown(_321Down[i]);
+                        pulseMotorDown(_321Down[i]);
                         CupPosition[_321Down[i]] = 0;
                     }
                 }
@@ -305,75 +314,80 @@ void main()
             case 1: // 1 - Diamond
                 // 0,1,2,4 up
                 for (i = 0; i < SIZE_DiamondUp; i++)  {
-                    if (CupPosition[_DiamondUp[i]] == 1) {
-                        motorDown[_DiamondUp[i]] = 1;
-                        CupPosition[_DiamondUp[i]] = 0;
+                    if (CupPosition[_DiamondUp[i]] == 0) {
+                        motorUp[_DiamondUp[i]] = 1;
+                        CupPosition[_DiamondUp[i]] = 1;
                     }
                 }
                 for (i = 0; i < (10 - SIZE_DiamondUp); i++) {
-                    if (CupPosition[_DiamondDown[i]] == 0) {
-                        motorUp[_DiamondDown[i]] = 1;
-                        CupPosition[_DiamondDown[i]] = 1;
+                    if (CupPosition[_DiamondDown[i]] == 1) {
+                        pulseMotorDown(_DiamondDown[i]);
+                        pulseMotorDown(_DiamondDown[i]);
+                        CupPosition[_DiamondDown[i]] = 0;
                     }
                 }
                 break;
             case 2: // 2 - Box
                 // 1,2,4,7,8
                 for (i = 0; i < SIZE_BoxUp; i++)  {
-                    if (CupPosition[_BoxUp[i]] == 1) {
-                        motorDown[_BoxUp[i]] = 1;
-                        CupPosition[_BoxUp[i]] = 0;
+                    if (CupPosition[_BoxUp[i]] == 0) {
+                        motorUp[_BoxUp[i]] = 1;
+                        CupPosition[_BoxUp[i]] = 1;
                     }
                 }
                 for (i = 0; i < (10 - SIZE_BoxUp); i++) {
-                    if (CupPosition[_BoxDown[i]] == 0) {
-                        motorUp[_BoxDown[i]] = 1;
-                        CupPosition[_BoxDown[i]] = 1;
+                    if (CupPosition[_BoxDown[i]] == 1) {
+                        pulseMotorDown(_BoxDown[i]);
+                        pulseMotorDown(_BoxDown[i]);
+                        CupPosition[_BoxDown[i]] = 0;
                     }
                 }
                 break;
             case 3: // 3 - Gentlemen's
                 // 4, 8
                 for (i = 0; i < SIZE_GentleUp; i++)  {
-                    if (CupPosition[_GentleUp[i]] == 1) {
-                        motorDown[_GentleUp[i]] = 1;
-                        CupPosition[_GentleUp[i]] = 0;
+                    if (CupPosition[_GentleUp[i]] == 0) {
+                        motorUp[_GentleUp[i]] = 1;
+                        CupPosition[_GentleUp[i]] = 1;
                     }
                 }
                 for (i = 0; i < (10 - SIZE_GentleUp); i++) {
-                    if (CupPosition[_GentleDown[i]] == 0) {
-                        motorUp[_GentleDown[i]] = 1;
-                        CupPosition[_GentleDown[i]] = 1;
+                    if (CupPosition[_GentleDown[i]] == 1) {
+                        pulseMotorDown(_GentleDown[i]);
+                        pulseMotorDown(_GentleDown[i]);
+                        CupPosition[_GentleDown[i]] = 0;
                     }
                 }
                 break;
             case 4: // 4 - Line
                 // 1,4,8
                 for (i = 0; i < SIZE_LineUp; i++)  {
-                    if (CupPosition[_LineUp[i]] == 1) {
-                        motorDown[_LineUp[i]] = 1;
-                        CupPosition[_LineUp[i]] = 0;
+                    if (CupPosition[_LineUp[i]] == 0) {
+                        motorUp[_LineUp[i]] = 1;
+                        CupPosition[_LineUp[i]] = 1;
                     }
                 }
                 for (i = 0; i < (10 - SIZE_LineUp); i++) {
-                    if (CupPosition[_LineDown[i]] == 0) {
-                        motorUp[_LineDown[i]] = 1;
-                        CupPosition[_LineDown[i]] = 1;
+                    if (CupPosition[_LineDown[i]] == 1) {
+                        pulseMotorDown(_LineDown[i]);
+                        pulseMotorDown(_LineDown[i]);
+                        CupPosition[_LineDown[i]] = 0;
                     }
                 }
                 break;
             case 5: // Triangle
                 // 4,7,8
                 for (i = 0; i < SIZE_TriUp; i++)  {
-                    if (CupPosition[_TriUp[i]] == 1) {
-                        motorDown[_TriUp[i]] = 1;
-                        CupPosition[_TriUp[i]] = 0;
+                    if (CupPosition[_TriUp[i]] == 0) {
+                        motorUp[_TriUp[i]] = 1;
+                        CupPosition[_TriUp[i]] = 1;
                     }
                 }
                 for (i = 0; i < (10 - SIZE_TriUp); i++) {
-                    if (CupPosition[_TriDown[i]] == 0) {
-                        motorUp[_TriDown[i]] = 1;
-                        CupPosition[_TriDown[i]] = 1;
+                    if (CupPosition[_TriDown[i]] == 1) {
+                        pulseMotorDown(_TriDown[i]);
+                        pulseMotorDown(_TriDown[i]);
+                        CupPosition[_TriDown[i]] = 0;
                     }
                 }
                 break;
@@ -407,7 +421,9 @@ void main()
         P8->OUT |= BIT3 & (motorUp[7] << 3);        //Motor8 Up
         P8->OUT |= BIT4 & (motorDown[8] << 4);      //Motor9 Down
         P8->OUT |= BIT5 & (motorUp[8] << 5);        //Motor9 Up
-        P8->OUT |= BIT7 & (motorDown[9] << 2);      //Motor10 Down
+        //P10->OUT |= BIT4 & (motorDown[9] << 4);      //Motor10 Down
+
+        P8->OUT |= BIT7 & (motorDown[9] << 7);      //Motor10 Down
         P9->OUT |= BIT0 & (motorUp[9]);             //Motor10 Up
 
 
@@ -424,13 +440,14 @@ void main()
         //**** MOTOR TIMER DONE - TURN MOTOR OFF*******
         //*********************************************
         if (motorOff == 1) {
-            printf("motor timer done\n");
+            //printf("motor timer done\n");
             motorOff = 0;
             // TURN ALL MOTORS OFF AT ONCE
             P7->OUT &= ~(BIT4 | BIT5 | BIT6 | BIT7);
             P8->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7);
             P3->OUT &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7);
             P9->OUT &= ~BIT0;
+            P10->OUT &= ~BIT4;
 
             for (i = 0; i < 10; i++) {
                 motorDown[i] = 0;
@@ -449,7 +466,7 @@ void pulseScore() {
 
     int x;
     P2->OUT |= BIT4;
-    for (i = 0; i < 10000; i++)
+    for (i = 0; i < 200000; i++)
         {
             x = i;
 
@@ -536,8 +553,8 @@ void pulseMotorDown(int a) {
 void printDiffs() {
     int i;
     printf("***************************************\n");
-    for (i = 0; i < 4; i++) {
-        printf("%d: %d\t%d\n",i,CupPrevious[i],CupCurrent[i]);
+    for (i = 0; i < 3; i++) {
+        printf("%d: %d\t%d\t%d\n",i,abs(CupPrevious[i] - CupCurrent[i]),CupPrevious[i],CupCurrent[i]);
     }
 
 }
@@ -576,19 +593,32 @@ void EUSCIA0_IRQHandler(void) // Code from DriverLib example
     if(status & EUSCI_A_UART_RECEIVE_INTERRUPT_FLAG)
     {
         uartChar = MAP_UART_receiveData(EUSCI_A0_BASE);
+        printf("UART: %d\n",uartChar);
         if (RED_TEAM == 1) {
             if (uartChar >= 97) {
                 uartChar -= 97;
-                uartFlag = 1;
+                if (waitRR) {
+                    waitRR = 0;
+                }
+                else {
+                    waitRR = 1;
+                    uartFlag = 1;
+                }
             }
         }
         else {
             if (uartChar <= 70) {
                 uartChar -= 65;
-                uartFlag = 1;
+                if (waitRR) {
+                    waitRR = 0;
+                }
+                else {
+                    waitRR = 1;
+                    uartFlag = 1;
+                }
             }
         }
-        printf("%d\n",uartChar);
+        printf("UART: %d\n",uartChar);
 
         //printf("%c\n",MAP_UART_receiveData(EUSCI_A2_BASE));
        // MAP_UART_transmitData(EUSCI_A2_BASE, MAP_UART_receiveData(EUSCI_A2_BASE));
@@ -606,7 +636,6 @@ void ADC14_IRQHandler(void) {
 
     if(status & ADC14_IER0_IE6)
     {
-        //printf("hey\n");
         if (firstRead == 1) {
             for (i = 0; i < 10; i++) {
                 CupPrevious[i] = ADC14->MEM[i];
