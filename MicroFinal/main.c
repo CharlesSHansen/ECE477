@@ -52,6 +52,7 @@ volatile int motorOff = 0;
 volatile int uartFlag = 0;
 volatile int uartChar = 0;
 volatile int waitRR = 0;
+volatile int pauseDiff = 0;
 
 volatile uint8_t            _321Up[SIZE_321Up] = {0,1,2,3,4,5};
 volatile uint8_t       _321Down[10 - SIZE_321Up] = {6,7,8,9};
@@ -265,7 +266,7 @@ void main()
             for(i = 0; i< 10; i++){
 
                 diff = abs(CupCurrent[i] - CupPrevious[i]);
-                if ((diff > threshholds[i]) && CupPosition[i] == 1){
+                if ((diff > threshholds[i]) && CupPosition[i] == 1 && !pauseDiff){
                     if(BallIn[i] == 0) {
                         printf("ball entered %d: diff: %d thresh: %d\n",i,diff,threshholds[i]);
                         // BALL ENTERING CUP - FLASH LIGHTS AND SEND SCORE TO MICRO
@@ -285,7 +286,11 @@ void main()
 
                     }
                 }
+
                 CupPrevious[i] = CupCurrent[i];
+            }
+            if (pauseDiff == 1) {
+                pauseDiff = 0;
             }
         }
 
@@ -548,6 +553,12 @@ void pulseMotorDown(int a) {
             P8->OUT &= ~BIT7;
                 break;
         }
+
+    for (i = 0; i < 200000; i++)
+            {
+                x = i;
+
+            }
 }
 
 void printDiffs() {
@@ -599,6 +610,7 @@ void EUSCIA0_IRQHandler(void) // Code from DriverLib example
                 uartChar -= 97;
                 if (waitRR) {
                     waitRR = 0;
+                    pauseDiff = 1;
                 }
                 else {
                     waitRR = 1;
@@ -611,6 +623,7 @@ void EUSCIA0_IRQHandler(void) // Code from DriverLib example
                 uartChar -= 65;
                 if (waitRR) {
                     waitRR = 0;
+                    pauseDiff = 1;
                 }
                 else {
                     waitRR = 1;
